@@ -1,0 +1,16 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - go build -o ./bin/fontman ./cmd/fontman
+  lint:
+    cmds:
+      - echo "running linter"
+  test:
+    cmds:
+      - go test .
+  run:
+    cmds:
+      - task build
+      - ./bin/fontman
