@@ -13,4 +13,4 @@ tasks:
   run:
     cmds:
       - task build
-      - ./bin/fontman
+      - ./bin/fontman {{.CLI_ARGS}}
