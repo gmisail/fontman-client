@@ -8,15 +8,28 @@ First look for a `fontman.yml` file in the current working directory
 and install all listed fonts. Otherwise, look up the font in the
 font registry and attempt to install.
 
+#### Flags
+
+- `-s, --style`
+- `-e, --exclude`
+- `-g, --global`
+
 ### `uninstall`
 
 Assuming you have the font installed, it will remove it
 from the system (if you have permission.)
 
+- `-s, --style`
+- `-e, --exclude`
+- `-g, --global`
+
 ### `list`
 
 Prints out each font with basic information (which styles
 you have installed, etc...)
+
+- `-s, --style`
+- `-e, --exclude`
 
 ### `info <fontname>`
 
@@ -28,12 +41,14 @@ installed.
 
 Regenerate the font cache for the system.
 
+- `-f, --force` 
+
 ### `upload`
 
 Assuming the client is authenticated, upload a `YAML` file
 with font metadata.
 
-### `search`
+### `search <fontname>`
 
 Search for a specific font in the font registry and, if 
 found, print out details about it.
@@ -43,10 +58,5 @@ specified command.
 
 ## Authentication
 
-### `login`
+### `authenticate`
 
-TBD.
-
-### `logout`
-
-TBD.
