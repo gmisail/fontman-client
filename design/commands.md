@@ -8,6 +8,10 @@ First look for a `fontman.yml` file in the current working directory
 and install all listed fonts. Otherwise, look up the font in the
 font registry and attempt to install.
 
+Install directory is `~/.fontman/` by default.
+
+Subdirectories `~/.fontman/ttf/<fontname>/`, `~/.fontman/otf/<fontname>/`
+
 #### Flags
 
 - `-s, --style`
@@ -23,6 +27,8 @@ from the system (if you have permission.)
 - `-e, --exclude`
 - `-g, --global`
 
+If a font is installed both locally and globally, it will prompt the user for which one to delete.
+
 ### `list`
 
 Prints out each font with basic information (which styles
@@ -30,6 +36,9 @@ you have installed, etc...)
 
 - `-s, --style`
 - `-e, --exclude`
+- `-g, --global` 
+
+Recursively search through single user directories first, then system-wide. 
 
 ### `info <fontname>`
 
