@@ -10,10 +10,13 @@ import (
 
 func main() {
 	app := &cli.App{
-		Name: "fontman",
+		Name:  "fontman",
 		Usage: "Utility for downloading and managing fonts.",
-		Commands: []*cli.Command { 
-			commands.RegisterList(),
+		Commands: []*cli.Command{
+			commands.RegisterAuthentication(),
+			commands.RegisterSearch(),
+			commands.RegisterCache(),
+			commands.RegisterUpload(),
 		},
 	}
 
