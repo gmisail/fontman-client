@@ -17,7 +17,7 @@ func onAuthenticate(c *cli.Context) error {
 func RegisterAuthentication() *cli.Command {
 	return &cli.Command{
 		Name:   "auth",
-		Usage:  "Authenticate or unauthenticate client.",
+		Usage:  "Authenticate or unauthenticate client",
 		Action: onAuthenticate,
 	}
 }

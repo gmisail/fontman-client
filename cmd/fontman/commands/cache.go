@@ -8,7 +8,7 @@ import (
 
 // Called if 'cache' subcommand is invoked.
 func onCache(c *cli.Context, force bool) error {
-	fmt.Println("list some fonts...")
+	fmt.Println("cache some font(s)...")
 	fmt.Println(force)
 
 	return nil
@@ -20,7 +20,7 @@ func RegisterCache() *cli.Command {
 
 	return &cli.Command{
 		Name:  "cache",
-		Usage: "Regenerate the cache for currently installed fonts.",
+		Usage: "Regenerate the cache for currently installed fonts",
 		Action: func(c *cli.Context) error {
 			return onCache(c, force)
 		},
@@ -28,7 +28,7 @@ func RegisterCache() *cli.Command {
 			&cli.BoolFlag{
 				Name:        "force",
 				Aliases:     []string{"f"},
-				Usage:       "force",
+				Usage:       "Regenerate cache for every font, not just un-cached ones.",
 				Destination: &force,
 			},
 		},

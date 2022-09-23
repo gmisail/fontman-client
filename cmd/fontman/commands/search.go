@@ -8,7 +8,7 @@ import (
 
 // Called if 'search' subcommand is invoked.
 func onSearch(c *cli.Context) error {
-	fmt.Println("list some fonts...")
+	fmt.Println("search for some font...")
 
 	return nil
 }
@@ -17,7 +17,7 @@ func onSearch(c *cli.Context) error {
 func RegisterSearch() *cli.Command {
 	return &cli.Command{
 		Name:   "search",
-		Usage:  "Search for a font in the font registry.",
+		Usage:  "Search for a font in the font registry",
 		Action: onSearch,
 	}
 }
