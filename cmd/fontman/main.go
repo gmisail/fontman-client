@@ -13,6 +13,10 @@ func main() {
 		Name:  "fontman",
 		Usage: "Utility for downloading and managing fonts.",
 		Commands: []*cli.Command{
+			commands.RegisterInstall(),
+			commands.RegisterUninstall(),
+			commands.RegisterInfo(),
+			commands.RegisterList(),
 			commands.RegisterAuthentication(),
 			commands.RegisterSearch(),
 			commands.RegisterCache(),
