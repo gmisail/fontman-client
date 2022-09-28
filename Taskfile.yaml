@@ -6,11 +6,12 @@ tasks:
       - go build -o ./bin/fontman ./cmd/fontman
   lint:
     cmds:
-      - echo "running linter"
+      - gofmt -w . 
   test:
     cmds:
       - go test .
   run:
     cmds:
+      - task lint
       - task build
       - ./bin/fontman {{.CLI_ARGS}}
