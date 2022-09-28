@@ -19,7 +19,7 @@ func RegisterUninstall() *cli.Command {
 	var global bool
 
 	return &cli.Command{
-		Name:   "install",
+		Name:   "uninstall",
 		Usage:  "Uninstall a font given its identifier in the registry.",
 		Action: onUninstall,
 		Flags: []cli.Flag{
