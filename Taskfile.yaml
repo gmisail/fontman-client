@@ -12,6 +12,6 @@ tasks:
       - go test .
   run:
     cmds:
-      - task lint
-      - task build
+      - task: lint
+      - task: build
       - ./bin/fontman {{.CLI_ARGS}}
