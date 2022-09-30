@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fontman/registry/cmd/fontman/commands"
+	"fontman/client/cmd/fontman/commands"
 	"log"
 	"os"
 

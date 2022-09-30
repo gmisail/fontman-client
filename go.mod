@@ -1,4 +1,4 @@
-module fontman/registry
+module fontman/client
 
 go 1.19
 

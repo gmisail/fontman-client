@@ -16,3 +16,6 @@
 
 # Build files
 bin/*
+
+# IDE specific files
+.idea/*
