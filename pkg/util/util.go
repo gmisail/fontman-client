@@ -7,17 +7,17 @@ import (
 )
 
 func Cache(verbose bool, force bool) error {
-	var verboseFlag string
-	var forceFlag string
+	flags := []string{}
 
 	if verbose {
-		verboseFlag = "-v"
-	}
-	if force {
-		forceFlag += "-f"
+		flags = append(flags, "-v")
 	}
 
-	cmd := exec.Command("fc-cache", verboseFlag, forceFlag)
+	if force {
+		flags = append(flags, "-f")
+	}
+
+	cmd := exec.Command("fc-cache", flags...)
 	err := cmd.Run()
 
 	if err != nil {
