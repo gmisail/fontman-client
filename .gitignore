@@ -19,3 +19,6 @@ bin/*
 
 # IDE specific files
 .idea/*
+
+# OS specific files
+**/.DS_Store
