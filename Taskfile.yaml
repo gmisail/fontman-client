@@ -9,7 +9,7 @@ tasks:
       - gofmt -w . 
   test:
     cmds:
-      - go test .
+      - go test ./...
   run:
     cmds:
       - task: lint

@@ -1,0 +1,4 @@
+name: "example"
+fonts:
+  - name: "fira code"
+    styles: [ "regular", "italics" ]
