@@ -17,7 +17,7 @@ func ReadProjectFile(path string) *model.ProjectFile {
 		return nil
 	}
 
-	var projectFile model.ProjectFile 
+	var projectFile model.ProjectFile
 
 	if parseErr := yaml.Unmarshal(contents, &projectFile); parseErr != nil {
 		log.Print(parseErr)
