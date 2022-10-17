@@ -1,11 +1,10 @@
 package model
 
-type FontFormat string
-
 const (
-	OTF FontFormat = "otf"
-	TTF            = "ttf"
-	TTC            = "ttc"
+	OTF  string = "otf"
+	TTF         = "ttf"
+	TTC         = "ttc"
+	NONE        = "none"
 )
 
 type FontFamily struct {
@@ -17,5 +16,5 @@ type FontFamily struct {
 type FontStyle struct {
 	Name   string
 	Path   string
-	Format FontFormat
+	Format string
 }
