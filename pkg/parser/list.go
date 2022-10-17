@@ -8,6 +8,8 @@ import (
 
 /*
 	Split the line into three sections: path, family name, and styles
+
+	<path>:<family>,<family-alt>,...:<style>,<style>,...
 */
 func SplitSections(line string) []string {
 	sections := strings.Split(strings.TrimSpace(line), ":")
@@ -19,8 +21,12 @@ func SplitSections(line string) []string {
 	return sections
 }
 
+/*
+	Given a string of lines (each line -> one font family definition), parse
+	them and return a list of FontFamily models
+*/
 func ParseListLines(lines string) []model.FontFamily {
-	families := []model.FontFamily{}
+	var families []model.FontFamily
 
 	for _, line := range strings.Split(lines, "\n") {
 		families = append(families, ParseListLine(line))
@@ -47,6 +53,7 @@ func ParseListLine(line string) model.FontFamily {
 	fontFormat := filepath.Ext(path)
 	styles := ParseStyles(path, fontFormat, sections[2])
 
+	// TODO: by default, we're only parsing the English (en) version. Potentially we could load in all languages.
 	return model.FontFamily{
 		Name:     fontFamilyNames[0],
 		Styles:   styles,
