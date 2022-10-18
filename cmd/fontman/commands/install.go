@@ -24,14 +24,14 @@ func onInstall(c *cli.Context, style string, ex_style string, global bool) error
 func RegisterInstall() *cli.Command {
 	// TODO: style/ex_style should be arrays of strings; look into how the lib handles multi-parameter argument
 	var style string
-	var ex_style string
+	var excludeStyle string
 	var global bool
 
 	return &cli.Command{
 		Name:  "install",
 		Usage: "Install a font given its identifier in the registry.",
 		Action: func(c *cli.Context) error {
-			return onInstall(c, style, ex_style, global)
+			return onInstall(c, style, excludeStyle, global)
 		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -44,7 +44,7 @@ func RegisterInstall() *cli.Command {
 				Name:        "exclude",
 				Aliases:     []string{"e"},
 				Usage:       "Install all styles except for the specified.",
-				Destination: &ex_style,
+				Destination: &excludeStyle,
 			},
 			&cli.BoolFlag{
 				Name:        "global",

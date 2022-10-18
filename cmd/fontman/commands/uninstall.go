@@ -23,14 +23,14 @@ func onUninstall(c *cli.Context, style string, ex_style string, global bool) err
 // Constructs the 'uninstall' subcommand.
 func RegisterUninstall() *cli.Command {
 	var style string
-	var ex_style string
+	var excludeStyle string
 	var global bool
 
 	return &cli.Command{
 		Name:  "uninstall",
 		Usage: "Uninstall a font given its identifier in the registry.",
 		Action: func(c *cli.Context) error {
-			return onUninstall(c, style, ex_style, global)
+			return onUninstall(c, style, excludeStyle, global)
 		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -43,7 +43,7 @@ func RegisterUninstall() *cli.Command {
 				Name:        "exclude",
 				Aliases:     []string{"e"},
 				Usage:       "Uninstall all styles except for the specified.",
-				Destination: &ex_style,
+				Destination: &excludeStyle,
 			},
 			&cli.BoolFlag{
 				Name:        "global",
