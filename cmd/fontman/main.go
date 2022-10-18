@@ -2,7 +2,6 @@ package main
 
 import (
 	"fontman/client/cmd/fontman/commands"
-	"fontman/client/pkg/util"
 	"log"
 	"os"
 
@@ -25,12 +24,7 @@ func main() {
 		},
 	}
 
-	err := util.SetupFolders()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = app.Run(os.Args)
+	err := app.Run(os.Args)
 
 	if err != nil {
 		log.Fatal(err)
