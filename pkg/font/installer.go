@@ -2,6 +2,9 @@ package font
 
 import (
 	"fmt"
+	"fontman/client/pkg/util"
+	"log"
+	"os"
 	"path/filepath"
 )
 
@@ -19,10 +22,35 @@ func validateFormat(file string) bool {
 	return fileType == "ttf" || fileType == "otf" || fileType == "ttc"
 }
 
-func InstallFont(file string) error {
+// InstallFont install a font either locally or globally & regenerate the cache.
+func InstallFont(file string, isGlobal bool) error {
 	if !validateFormat(file) {
 		return &InstallationError{
 			message: fmt.Sprintf("Cannot install font with unsupported format '%s'.", filepath.Ext(file)),
 		}
+	}
+
+	// determine where to install the font
+	installPath := "/local path"
+	if isGlobal {
+		// TODO: check if running as root
+		// if not, report error and exit -- we don't have system access without it
+
+		installPath = "/global path"
+	}
+
+	fileName := filepath.Base(file)
+
+	// rename the font to the target directory, equivalent to `mv font.ttf ~/dest/font.ttf`
+	installErr := os.Rename(file, filepath.Join(installPath, fileName))
+
+	if installErr != nil {
+		log.Fatal(installErr)
+	}
+
+	// after installation, attempt to regenerate the cache
+	cacheErr := util.Cache(false, false)
+	if cacheErr != nil {
+		log.Fatal(cacheErr)
 	}
 }
