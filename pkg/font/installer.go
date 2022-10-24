@@ -3,7 +3,6 @@ package font
 import (
 	"fmt"
 	"fontman/client/pkg/util"
-	"log"
 	"os"
 	"path/filepath"
 )
@@ -19,7 +18,7 @@ func (i InstallationError) Error() string {
 
 func validateFormat(file string) bool {
 	fileType := filepath.Ext(file)
-	return fileType == "ttf" || fileType == "otf" || fileType == "ttc"
+	return fileType == ".ttf" || fileType == ".otf" || fileType == ".ttc"
 }
 
 // InstallFont install a font either locally or globally & regenerate the cache.
@@ -30,13 +29,23 @@ func InstallFont(file string, isGlobal bool) error {
 		}
 	}
 
+	if _, statErr := os.Stat(file); statErr != nil {
+		return &InstallationError{
+			message: fmt.Sprintf("File '%s' does not exist.", file),
+		}
+	}
+
 	// determine where to install the font
-	installPath := "/local path"
+	installPath := util.GetInstallationPath()
 	if isGlobal {
 		// TODO: check if running as root
 		// if not, report error and exit -- we don't have system access without it
 
-		installPath = "/global path"
+		// TODO: add global installation, installPath = "/global path"
+
+		return &InstallationError{
+			message: "Currently do not support global font installation.",
+		}
 	}
 
 	fileName := filepath.Base(file)
@@ -45,12 +54,16 @@ func InstallFont(file string, isGlobal bool) error {
 	installErr := os.Rename(file, filepath.Join(installPath, fileName))
 
 	if installErr != nil {
-		log.Fatal(installErr)
+		return installErr
 	}
 
 	// after installation, attempt to regenerate the cache
 	cacheErr := util.Cache(false, false)
 	if cacheErr != nil {
-		log.Fatal(cacheErr)
+		return cacheErr
 	}
+
+	fmt.Printf("Successfully installed '%s' to %s! 🎉\n", fileName, installPath)
+
+	return nil
 }
