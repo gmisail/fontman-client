@@ -2,16 +2,26 @@ package commands
 
 import (
 	"fmt"
+	"fontman/client/pkg/util"
+	"log"
 
 	"github.com/urfave/cli/v2"
 )
 
 // Called if 'list' subcommand is invoked.
-func onList(c *cli.Context) error {
+func onList(c *cli.Context, style string, global bool) error {
+	err := util.SetupFolders(global)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	fmt.Println("Listing installed font(s)...")
 
 	return nil
 }
+
+// path, style, name, font format (truetype/open),
 
 // Constructs the 'list' subcommand.
 func RegisterList() *cli.Command {
@@ -19,9 +29,11 @@ func RegisterList() *cli.Command {
 	var global bool
 
 	return &cli.Command{
-		Name:   "list",
-		Usage:  "List all the installed fonts on the system.",
-		Action: onList,
+		Name:  "list",
+		Usage: "List all the installed fonts on the system.",
+		Action: func(c *cli.Context) error {
+			return onList(c, style, global)
+		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "style",

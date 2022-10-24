@@ -10,7 +10,7 @@ import (
 )
 
 func Cache(verbose bool, force bool) error {
-	flags := []string{}
+	var flags []string
 
 	if verbose {
 		flags = append(flags, "-v")
@@ -23,6 +23,8 @@ func Cache(verbose bool, force bool) error {
 	cmd := exec.Command("fc-cache", flags...)
 	err := cmd.Run()
 
+	// pipe output into parser
+
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -30,22 +32,43 @@ func Cache(verbose bool, force bool) error {
 	return nil
 }
 
-func SetupFolders() error {
-	fontmanDir, err := os.UserHomeDir()
+func SetupFolders(global bool) error {
+	// create fontman folder in .config if it doesn't exist
+	configDir, err := os.UserConfigDir()
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
 
-	fontmanDir += "/.fontman"
-
-	if _, err := os.Stat(fontmanDir); errors.Is(err, os.ErrNotExist) {
-		err := os.Mkdir(fontmanDir, 0755)
+	configDir += "/.fontman"
+	if _, err := os.Stat(configDir); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(configDir, 0755)
 		if err != nil {
 			log.Fatal(err)
 			return err
 		}
 	}
+
+	// use global flag to determine if we need to check and create $HOME/.fontman folder
+	// if global is true, we assume system font folders such as /usr/share/fonts exists
+	if !global {
+		fontmanDir, err := os.UserHomeDir()
+		if err != nil {
+			log.Fatal(err)
+			return err
+		}
+
+		fontmanDir += "/.fontman"
+
+		if _, err := os.Stat(fontmanDir); errors.Is(err, os.ErrNotExist) {
+			err := os.Mkdir(fontmanDir, 0755)
+			if err != nil {
+				log.Fatal(err)
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 
