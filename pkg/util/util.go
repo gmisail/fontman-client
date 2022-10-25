@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 func Cache(verbose bool, force bool) error {
@@ -69,4 +70,14 @@ func SetupFolders(global bool) error {
 	}
 
 	return nil
+}
+
+func GetInstallationPath() string {
+	dir, err := os.UserHomeDir()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return filepath.Join(dir, "/.fontman")
 }

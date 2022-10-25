@@ -2,22 +2,25 @@ package commands
 
 import (
 	"fmt"
+  "fontman/client/pkg/font"
 	"fontman/client/pkg/util"
 	"log"
-
 	"github.com/urfave/cli/v2"
 )
 
 // Called if 'install' subcommand is invoked.
-func onInstall(c *cli.Context, style string, ex_style string, global bool) error {
-	err := util.SetupFolders(global)
+func onInstall(c *cli.Context, style string, excludeStyle string, global bool) error {
+	fileName := c.Args().Get(0)
 
-	if err != nil {
-		log.Fatal(err)
+	// no arguments, install from local file
+	if len(fileName) == 0 {
+		// TODO: return font.InstallFromFile()
+		return nil
 	}
-	fmt.Println("Installing font(s)...")
 
-	return nil
+	// TODO: try to install from remote
+
+	return font.InstallFont(fileName, global)
 }
 
 // Constructs the 'install' subcommand.
