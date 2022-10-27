@@ -6,6 +6,7 @@ import (
 	"fontman/client/pkg/util"
 	"log"
 	"sort"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 )
@@ -34,8 +35,26 @@ func onList(c *cli.Context, style string, global bool) error {
 		return allFonts[i].Name < allFonts[j].Name
 	})
 
+	b := strings.Builder{}
 	for _, font := range allFonts {
-		fmt.Println(font.Name, font.Language, font.Styles)
+		b.Reset()
+
+		b.WriteString(font.Name)
+		b.WriteString(" ")
+		b.WriteString(font.Language)
+		b.WriteString(" (")
+
+		for i, style := range font.Styles {
+			b.WriteString(style.Name)
+
+			if len(font.Styles)-1 != i {
+				b.WriteString(", ")
+			}
+		}
+
+		b.WriteString(")")
+
+		fmt.Println(b.String())
 	}
 
 	return nil

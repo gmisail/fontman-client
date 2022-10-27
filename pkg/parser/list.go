@@ -63,7 +63,7 @@ func ParseListLine(line string) *model.FontFamily {
 	styles := []model.FontStyle{}
 
 	if len(sections) > 2 {
-		ParseStyles(path, fontFormat, sections[2])
+		styles = ParseStyles(path, fontFormat, sections[2])
 	}
 
 	// TODO: by default, we're only parsing the English (en) version. Potentially we could load in all languages.
