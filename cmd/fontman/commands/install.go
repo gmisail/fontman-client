@@ -1,11 +1,11 @@
 package commands
 
 import (
-	"fmt"
-  "fontman/client/pkg/font"
-	"fontman/client/pkg/util"
-	"log"
+	//	"fmt"
+	"fontman/client/pkg/font"
+	//	"fontman/client/pkg/util"
 	"github.com/urfave/cli/v2"
+	// "log"
 )
 
 // Called if 'install' subcommand is invoked.

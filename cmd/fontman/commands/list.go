@@ -2,8 +2,10 @@ package commands
 
 import (
 	"fmt"
+	"fontman/client/pkg/parser"
 	"fontman/client/pkg/util"
 	"log"
+	"sort"
 
 	"github.com/urfave/cli/v2"
 )
@@ -14,9 +16,27 @@ func onList(c *cli.Context, style string, global bool) error {
 
 	if err != nil {
 		log.Fatal(err)
+
+		return err
 	}
 
-	fmt.Println("Listing installed font(s)...")
+	listOut, listOutErr := util.ListAll()
+
+	if listOutErr != nil {
+		log.Fatal(listOutErr)
+
+		return listOutErr
+	}
+
+	allFonts := parser.ParseListLines(listOut)
+
+	sort.Slice(allFonts, func(i, j int) bool {
+		return allFonts[i].Name < allFonts[j].Name
+	})
+
+	for _, font := range allFonts {
+		fmt.Println(font.Name, font.Language, font.Styles)
+	}
 
 	return nil
 }

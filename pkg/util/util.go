@@ -32,6 +32,19 @@ func Cache(verbose bool, force bool) error {
 	return nil
 }
 
+func ListAll() (string, error) {
+	cmd := exec.Command("fc-list", ":", "family", "style", "file")
+	output, outputErr := cmd.Output()
+
+	if outputErr != nil {
+		log.Fatal(outputErr)
+
+		return "", outputErr
+	}
+
+	return string(output), nil
+}
+
 func SetupFolders(global bool) error {
 	// create fontman folder in .config if it doesn't exist
 	configDir, err := os.UserConfigDir()
