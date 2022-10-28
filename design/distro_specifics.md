@@ -1,3 +1,8 @@
+### Tentative approach to finding dir to install to:
+iterate through a list of dirs, check if they exist, install there.
+
+For running with root, pass in `global` to `GetInstallPath`, choose a path. 
+
 ## Arch Linux
 ### Single User
 - ~/.local/share/fonts/
@@ -41,3 +46,10 @@ https://wiki.debian.org/Fonts#Manually
 - /usr/local/share/fonts
 
 https://docs.fedoraproject.org/en-US/quick-docs/fonts/#unpackaged
+
+## MacOS
+### Single User
+- ~/Library/Fonts
+
+### Global
+- /Library/Fonts
