@@ -1,15 +1,19 @@
 package commands
 
 import (
-	"fmt"
-  "fontman/client/pkg/font"
+	"errors"
+	"fontman/client/pkg/font"
 	"fontman/client/pkg/util"
-	"log"
 	"github.com/urfave/cli/v2"
 )
 
 // Called if 'install' subcommand is invoked.
 func onInstall(c *cli.Context, style string, excludeStyle string, global bool) error {
+	// if global flag is set, but user doesn't have permission
+	if global && !util.CheckRoot() {
+		return errors.New("no root permission; run it again with sudo")
+	}
+
 	fileName := c.Args().Get(0)
 
 	// no arguments, install from local file
