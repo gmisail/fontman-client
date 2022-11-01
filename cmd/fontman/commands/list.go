@@ -14,22 +14,50 @@ import (
 )
 
 /*
-	Given a list of fonts, combine them by family name. Returns a list of the 
+	Given a list of fonts, combine them by family name. Returns a list of the
 	formatted font names as well as a mapping of font name to family.
 */
-func showUnique(fonts []*model.FontFamily) ([]string, map[string]model.FontFamily) {
-	unique := make(map[string]model.FontFamily)
+func showUnique(fonts []*model.FontFamily) ([]string, map[string][]string) {
+	// family => list of unique styles
+	unique := make(map[string][]string)
+
+	// family => "set" of styles, ensures that styles are unique before appending
+	uniqueStyles := make(map[string]map[string]struct{})
+
+	// unique font family names
 	names := []string{}
 
+	// for each font, find all *unique* styles & combine common font families.
 	for _, font := range fonts {
+		// if the font already exists, don't bother re-registering
 		if family, ok := unique[font.Name]; ok {
-			family.Styles = append(family.Styles, font.Styles...)
+			for _, style := range font.Styles {
+				// only add style if it is unique, i.e. it hasn't been registered yet
+				if _, hasStyle := uniqueStyles[font.Name][style.Name]; !hasStyle {
+					unique[font.Name] = append(family, style.Name)
+					uniqueStyles[font.Name][style.Name] = struct{}{}
+				}
+			}
 		} else {
-			unique[font.Name] = *font
+			// register new font
+			unique[font.Name] = []string{}
+			uniqueStyles[font.Name] = make(map[string]struct{})
+
+			for _, style := range font.Styles {
+				unique[font.Name] = append(unique[font.Name], style.Name)
+				uniqueStyles[font.Name][style.Name] = struct{}{}
+			}
+
 			names = append(names, strings.Title(font.Name))
 		}
 	}
 
+	// sort each of the styles so that order is deterministic
+	for familyName := range unique {
+		sort.Strings(unique[familyName])
+	}
+
+	// sort all font names
 	sort.Strings(names)
 
 	return names, unique
@@ -62,22 +90,22 @@ func onList(c *cli.Context, style string, global bool) error {
 
 		// font name
 		b.WriteString(color.YellowString(name))
-		
+
 		// if styles exist, print them
-		if len(font.Styles) > 0 {
+		if len(font) > 0 {
 			b.WriteString(" (")
 
-			for i, style := range font.Styles {
-				b.WriteString(style.Name)
+			for i, style := range font {
+				b.WriteString(style)
 
-				if len(font.Styles)-1 != i {
+				if len(font)-1 != i {
 					b.WriteString(", ")
 				}
 			}
 
 			b.WriteString(")")
 		}
-		
+
 		// print the line and reset the buffer
 		fmt.Println(b.String())
 		b.Reset()
