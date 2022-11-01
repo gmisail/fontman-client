@@ -2,14 +2,38 @@ package commands
 
 import (
 	"fmt"
+	"fontman/client/pkg/model"
 	"fontman/client/pkg/parser"
 	"fontman/client/pkg/util"
 	"log"
 	"sort"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
 )
+
+/*
+	Given a list of fonts, combine them by family name. Returns a list of the 
+	formatted font names as well as a mapping of font name to family.
+*/
+func showUnique(fonts []*model.FontFamily) ([]string, map[string]model.FontFamily) {
+	unique := make(map[string]model.FontFamily)
+	names := []string{}
+
+	for _, font := range fonts {
+		if family, ok := unique[font.Name]; ok {
+			family.Styles = append(family.Styles, font.Styles...)
+		} else {
+			unique[font.Name] = *font
+			names = append(names, strings.Title(font.Name))
+		}
+	}
+
+	sort.Strings(names)
+
+	return names, unique
+}
 
 // Called if 'list' subcommand is invoked.
 func onList(c *cli.Context, style string, global bool) error {
@@ -29,32 +53,34 @@ func onList(c *cli.Context, style string, global bool) error {
 		return listOutErr
 	}
 
-	allFonts := parser.ParseListLines(listOut)
-
-	sort.Slice(allFonts, func(i, j int) bool {
-		return allFonts[i].Name < allFonts[j].Name
-	})
+	// get all fonts and combine them based on family
+	names, fonts := showUnique(parser.ParseListLines(listOut))
 
 	b := strings.Builder{}
-	for _, font := range allFonts {
-		b.Reset()
+	for _, name := range names {
+		font := fonts[name]
 
-		b.WriteString(font.Name)
-		b.WriteString(" ")
-		b.WriteString(font.Language)
-		b.WriteString(" (")
+		// font name
+		b.WriteString(color.YellowString(name))
+		
+		// if styles exist, print them
+		if len(font.Styles) > 0 {
+			b.WriteString(" (")
 
-		for i, style := range font.Styles {
-			b.WriteString(style.Name)
+			for i, style := range font.Styles {
+				b.WriteString(style.Name)
 
-			if len(font.Styles)-1 != i {
-				b.WriteString(", ")
+				if len(font.Styles)-1 != i {
+					b.WriteString(", ")
+				}
 			}
+
+			b.WriteString(")")
 		}
-
-		b.WriteString(")")
-
+		
+		// print the line and reset the buffer
 		fmt.Println(b.String())
+		b.Reset()
 	}
 
 	return nil
