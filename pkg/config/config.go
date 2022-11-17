@@ -2,14 +2,14 @@ package config
 
 import (
 	"fontman/client/pkg/model"
-	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/goccy/go-yaml"
 )
 
 func ReadProjectFile(path string) *model.ProjectFile {
-	contents, fileErr := ioutil.ReadFile(path)
+	contents, fileErr := os.ReadFile(path)
 
 	if fileErr != nil {
 		log.Print(fileErr)
