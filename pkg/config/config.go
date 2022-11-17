@@ -8,6 +8,23 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
+func ReadConfigFile(path string) *model.ConfigFile {
+	contents, fileErr := os.ReadFile(path)
+
+	if fileErr != nil {
+		log.Println(fileErr)
+		return nil
+	}
+
+	var configFile model.ConfigFile
+	if parseErr := yaml.Unmarshal(contents, &configFile); parseErr != nil {
+		log.Println(parseErr)
+		return nil
+	}
+
+	return &configFile
+}
+
 func ReadProjectFile(path string) *model.ProjectFile {
 	contents, fileErr := os.ReadFile(path)
 
