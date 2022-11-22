@@ -8,10 +8,11 @@ import (
 	"net/http"
 )
 
-var BASE_URL string = "http://127.0.0.1:8080/api/font"
+// TODO: load this from a remotes config variable, so: remotes: [ registry.fontman.io, http://196.1668... ]
+var BASE_URL string = "http://127.0.0.1:8080"
 
 func GetFontDetails(id string) (*model.RemoteFontFamily, error) {
-	url := fmt.Sprintf("%s/%s", BASE_URL, id)
+	url := fmt.Sprintf("%s/api/font/%s", BASE_URL, id)
 	response, getErr := http.Get(url)
 
 	if getErr != nil {
