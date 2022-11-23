@@ -2,6 +2,7 @@ package commands
 
 import (
 	"errors"
+	"fmt"
 	"fontman/client/pkg/font"
 	"fontman/client/pkg/util"
 	"path/filepath"
@@ -21,6 +22,7 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 
 	// no arguments: install from local `fontman.yml` file
 	if len(fileName) == 0 {
+		fmt.Println("fetching from fontman.yml file...")
 		return nil
 	}
 
