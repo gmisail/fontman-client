@@ -70,7 +70,7 @@ func InstallFont(file string, isGlobal bool) error {
 }
 
 func InstallFromRemote(id string) error {
-	remoteFont, remoteErr := api.GetFontDetails("608308d7-5f72-45f4-9776-a99a692703d6")
+	remoteFont, remoteErr := api.GetFontDetails(id)
 
 	if remoteErr != nil {
 		return remoteErr

@@ -34,7 +34,7 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 		return font.InstallFont(fileName, global)
 	}
 
-	return font.InstallFromRemote("608308d7-5f72-45f4-9776-a99a692703d6")
+	return font.InstallFromRemote("3cc5af2a-0fbd-4190-9889-e527abaf7df8")
 }
 
 // Constructs the 'install' subcommand.

@@ -12,12 +12,12 @@ import (
 // TODO: load this from a remotes config variable, so: remotes: [ registry.fontman.io, http://196.1668... ]
 var BASE_URL string = "http://127.0.0.1:8080"
 
+// DownloadFrom: downloads file from 'url' and saves it as 'dest`
 func DownloadFrom(url string, dest string) error {
-	// response, err := http.Get("https://github.com/google/fonts/raw/main/ofl/anonymouspro/AnonymousPro-Bold.ttf")
-	response, err := http.Get(url)
+	response, resErr := http.Get(url)
 
-	if err != nil {
-		return err
+	if resErr != nil {
+		return resErr
 	}
 
 	defer response.Body.Close()
@@ -31,6 +31,7 @@ func DownloadFrom(url string, dest string) error {
 	return os.WriteFile(dest, contents, 0777)
 }
 
+// GetFontDetails: return details for a font with ID
 func GetFontDetails(id string) (*model.RemoteFontFamily, error) {
 	url := fmt.Sprintf("%s/api/font/%s", BASE_URL, id)
 	response, getErr := http.Get(url)
@@ -60,7 +61,7 @@ func GetFontDetails(id string) (*model.RemoteFontFamily, error) {
 	for _, style := range font.Styles {
 		dest := fmt.Sprintf("%s-%s.%s", font.Name, style.Type, "ttf")
 
-		if err := DownloadFrom(fmt.Sprintf("http://%s", style.Url), dest); err != nil {
+		if err := DownloadFrom(style.Url, dest); err != nil {
 			return nil, err
 		}
 	}
