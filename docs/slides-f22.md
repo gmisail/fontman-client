@@ -8,6 +8,20 @@
 
 `fontman` is a command line-based package manager for fonts.
 
+Installing fonts is either done through clunky user interfaces
+*or* manually moving fonts to the correct system folder & regenerating
+the font cache.
+
+Package managers like `npm` or `pacman` make it very easy to
+install executables & libraries; why is there no package
+manager for fonts as well?
+
+---
+
+## Team
+
+- Graham Misail (Project Lead)
+
 ---
 
 ## Stack 
@@ -37,7 +51,8 @@ separate repositories.
 For handling "tickets" / issues, we used Github's Issue Tracker; having multiple repositories allowed us
 to cleanly manage issues for both projects.
 
-Due to being a small team, we used Discord for communication (in addition to having system architecture discussions during class.)
+Due to being a small team, we used Discord for communication (in addition to having system architecture 
+discussions during class.)
 
 ---
 
@@ -73,7 +88,37 @@ TBD.
 
 ---
 
-## Demo
-```bash
+# Demo
 
+---
+
+## Install from Registry 
+```bash
+fontman install Inconsolata
 ```
+
+---
+
+## Install from File 
+```bash
+fontman install ComicMono.ttf 
+```
+
+---
+
+## Install from Project File 
+```bash
+fontman install 
+```
+
+---
+
+## Next Steps
+
+TBD.
+
+---
+
+# Conclusion
+
+Any questions?
