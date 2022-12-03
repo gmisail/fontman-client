@@ -1,7 +1,6 @@
 package parser
 
 import (
-	//	"fmt"
 	"fontman/client/pkg/model"
 	"path/filepath"
 	"strings"

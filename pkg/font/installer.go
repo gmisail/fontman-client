@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"fontman/client/pkg/errors"
 	"fontman/client/pkg/util"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 )
@@ -11,6 +13,25 @@ import (
 func validateFormat(file string) bool {
 	fileType := filepath.Ext(file)
 	return fileType == ".ttf" || fileType == ".otf" || fileType == ".ttc"
+}
+
+// DownloadFrom: downloads file from 'url' and saves it as 'dest`
+func DownloadFrom(url string, dest string) error {
+	response, resErr := http.Get(url)
+
+	if resErr != nil {
+		return resErr
+	}
+
+	defer response.Body.Close()
+
+	contents, readErr := ioutil.ReadAll(response.Body)
+
+	if readErr != nil {
+		return readErr
+	}
+
+	return os.WriteFile(dest, contents, 0777)
 }
 
 // InstallFont install a font either locally or globally & regenerate the cache.
@@ -49,6 +70,25 @@ func InstallFont(file string, isGlobal bool) error {
 	}
 
 	fmt.Printf("Successfully installed '%s' to %s! 🎉\n", fileName, installPath)
+
+	return nil
+}
+
+func InstallFromRemote(id string) error {
+	font, err := api.GetFontDetails(id)
+
+	if err != nil {
+		return err
+	}
+
+	// download each style to a file with name: <family>-<style>.<format>
+	for _, style := range font.Styles {
+		dest := fmt.Sprintf("%s-%s.%s", font.Name, style.Type, "ttf")
+
+		if err := DownloadFrom(style.Url, dest); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

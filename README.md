@@ -17,4 +17,21 @@ TBD.
 
 ## Usage
 
+### Install from Remote
+
 TBD.
+
+### Install from `fontman.yml`
+
+Run `fontman install` in the same directory as your `fontman.yml` file. This will download & install all fonts
+to your system if necessary.
+
+### Install from Local File (`.ttf`, `.otf`)
+
+If you have a font downloaded locally, you can easily install it through `fontman` by passing in the filename
+as an argument to `install`.
+
+#### Example
+```
+fontman install Arial.ttf
+```

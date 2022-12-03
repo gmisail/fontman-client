@@ -2,8 +2,11 @@ package commands
 
 import (
 	"errors"
+	"fmt"
 	"fontman/client/pkg/font"
 	"fontman/client/pkg/util"
+	"path/filepath"
+
 	"github.com/urfave/cli/v2"
 	// "log"
 )
@@ -17,15 +20,21 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 
 	fileName := c.Args().Get(0)
 
-	// no arguments, install from local file
+	// no arguments: install from local `fontman.yml` file
 	if len(fileName) == 0 {
-		// TODO: return font.InstallFromFile()
+		fmt.Println("fetching from fontman.yml file...")
 		return nil
 	}
 
-	// TODO: try to install from remote
+	// test.ttf: local fille, test: remote file
+	ext := filepath.Ext(fileName)
 
-	return font.InstallFont(fileName, global)
+	// if there's an extensiuon, then we're trying to install from loccal
+	if len(ext) != 0 {
+		return font.InstallFont(fileName, global)
+	}
+
+	return font.InstallFromRemote("3cc5af2a-0fbd-4190-9889-e527abaf7df8")
 }
 
 // Constructs the 'install' subcommand.
