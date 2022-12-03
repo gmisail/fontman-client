@@ -81,7 +81,7 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 		return errors.New(fmt.Sprintf("No fonts found with name '%s'", fileName))
 	}
 
-	return font.InstallFromRemote(selectedId)
+	return font.InstallFromRemote(selectedId, global)
 }
 
 // Constructs the 'install' subcommand.

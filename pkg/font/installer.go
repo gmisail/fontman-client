@@ -76,7 +76,7 @@ func InstallFont(file string, isGlobal bool) error {
 	return nil
 }
 
-func InstallFromRemote(id string) error {
+func InstallFromRemote(id string, isGlobal bool) error {
 	font, err := api.GetFontDetails(id)
 
 	if err != nil {
@@ -95,8 +95,6 @@ func InstallFromRemote(id string) error {
 		if err := DownloadFrom(style.Url, dest); err != nil {
 			return err
 		}
-
-		// TODO: pass down isGlobal flag
 
 		// install the font to the system
 		if err := InstallFont(dest, false); err != nil {
