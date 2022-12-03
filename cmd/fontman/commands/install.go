@@ -18,7 +18,7 @@ func selectionView(options []model.RemoteFontFamily) string {
 	view := strings.Builder{}
 
 	for i, option := range options {
-		view.WriteString(fmt.Sprintf("%d) %s [%s]\n", i + 1, option.Name, option.Id))
+		view.WriteString(fmt.Sprintf("%d) %s [%s]\n", i+1, option.Name, option.Id))
 	}
 
 	view.WriteString(fmt.Sprintf("\nSelect an option to install [1 - %d]:", len(options)))
@@ -73,7 +73,7 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 		selectedId = selectOption(options)
 
 		if len(selectedId) == 0 {
-			return errors.New(fmt.Sprintf("Invalid option selected.")) 
+			return errors.New(fmt.Sprintf("Invalid option selected."))
 		}
 	} else if len(options) == 1 {
 		selectedId = options[0].Id

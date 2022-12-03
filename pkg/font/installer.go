@@ -2,6 +2,7 @@ package font
 
 import (
 	"fmt"
+	"fontman/client/pkg/api"
 	"fontman/client/pkg/errors"
 	"fontman/client/pkg/util"
 	"io/ioutil"
