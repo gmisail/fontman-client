@@ -16,7 +16,7 @@ func ReadConfigFile(path string) *model.ConfigFile {
 		return nil
 	}
 
-	var configFile model.ConfigFile
+	configFile := model.ConfigFile{}
 	if parseErr := yaml.Unmarshal(contents, &configFile); parseErr != nil {
 		log.Println(parseErr)
 		return nil

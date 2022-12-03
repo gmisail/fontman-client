@@ -1,5 +1,6 @@
 package model
 
 type ConfigFile struct {
-	InstallPath string `yaml:"path"`
+	LocalInstallPath  string `yaml:"local_path"`
+	GlobalInstallPath string `yaml:"global_path"`
 }

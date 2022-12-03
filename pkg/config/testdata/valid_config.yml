@@ -1,1 +1,2 @@
-path: "/usr/local/fonts"
+local_path: "/Users/meow/Library/Fonts"
+global_path: "/Library/Fonts"

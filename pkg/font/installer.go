@@ -2,19 +2,11 @@ package font
 
 import (
 	"fmt"
+	"fontman/client/pkg/errors"
 	"fontman/client/pkg/util"
 	"os"
 	"path/filepath"
 )
-
-type InstallationError struct {
-	message string
-}
-
-// TODO: replace with a standard error format
-func (i InstallationError) Error() string {
-	panic(i.message)
-}
 
 func validateFormat(file string) bool {
 	fileType := filepath.Ext(file)
@@ -24,28 +16,21 @@ func validateFormat(file string) bool {
 // InstallFont install a font either locally or globally & regenerate the cache.
 func InstallFont(file string, isGlobal bool) error {
 	if !validateFormat(file) {
-		return &InstallationError{
-			message: fmt.Sprintf("Cannot install font with unsupported format '%s'.", filepath.Ext(file)),
+		return &errors.InstallationError{
+			Message: fmt.Sprintf("Cannot install font with unsupported format '%s'.", filepath.Ext(file)),
 		}
 	}
 
 	if _, statErr := os.Stat(file); statErr != nil {
-		return &InstallationError{
-			message: fmt.Sprintf("File '%s' does not exist.", file),
+		return &errors.InstallationError{
+			Message: fmt.Sprintf("File '%s' does not exist.", file),
 		}
 	}
 
 	// determine where to install the font
-	installPath := util.GetInstallationPath()
-	if isGlobal {
-		// TODO: check if running as root
-		// if not, report error and exit -- we don't have system access without it
-
-		// TODO: add global installation, installPath = "/global path"
-
-		return &InstallationError{
-			message: "Currently do not support global font installation.",
-		}
+	installPath, err := util.GetFontFolder(isGlobal)
+	if err != nil {
+		return err
 	}
 
 	fileName := filepath.Base(file)
