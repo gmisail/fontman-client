@@ -19,6 +19,10 @@ type FontStyle struct {
 	Format string
 }
 
+type RemoteFontList struct {
+	Fonts []RemoteFontFamily `json:"fonts"`
+}
+
 type RemoteFontFamily struct {
 	Id     string            `json:"id"`
 	Name   string            `json:"name"`

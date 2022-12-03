@@ -14,8 +14,8 @@ import (
 )
 
 /*
-	Given a list of fonts, combine them by family name. Returns a list of the
-	formatted font names as well as a mapping of font name to family.
+Given a list of fonts, combine them by family name. Returns a list of the
+formatted font names as well as a mapping of font name to family.
 */
 func showUnique(fonts []*model.FontFamily) ([]string, map[string][]string) {
 	// family => list of unique styles
