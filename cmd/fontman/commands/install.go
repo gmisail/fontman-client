@@ -11,7 +11,6 @@ import (
 	"fontman/client/pkg/util"
 	"path/filepath"
 
-	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
 )
 
