@@ -11,6 +11,7 @@ import (
 	"fontman/client/pkg/util"
 	"path/filepath"
 
+	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
 )
 
@@ -52,14 +53,14 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 
 	// no arguments: install from local `fontman.yml` file
 	if len(fileName) == 0 {
-		fmt.Println("fetching from fontman.yml file...")
+		fmt.Println("TODO: Fetch from fontman.yml file...")
 		return nil
 	}
 
-	// test.ttf: local fille, test: remote file
+	// test.ttf: local file, test: remote file
 	ext := filepath.Ext(fileName)
 
-	// if there's an extension, then we're trying to install from loccal
+	// if there's an extension, then we're trying to install from local
 	if len(ext) != 0 {
 		return font.InstallFont(fileName, global)
 	}
@@ -76,8 +77,10 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 			return errors.New(fmt.Sprintf("Invalid option selected."))
 		}
 	} else if len(options) == 1 {
+		// if there is only one option, don't bother presenting options
 		selectedId = options[0].Id
 	} else {
+		// no options, throw error
 		return errors.New(fmt.Sprintf("No fonts found with name '%s'", fileName))
 	}
 
@@ -95,7 +98,13 @@ func RegisterInstall() *cli.Command {
 		Name:  "install",
 		Usage: "Install a font given its identifier in the registry.",
 		Action: func(c *cli.Context) error {
-			return onInstall(c, style, excludeStyle, global)
+			err := onInstall(c, style, excludeStyle, global)
+
+			if err != nil {
+				cli.Exit(err.Error(), 1)
+			}
+
+			return nil
 		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
