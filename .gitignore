@@ -22,3 +22,5 @@ bin/*
 
 # OS specific files
 **/.DS_Store
+
+*.ttf
