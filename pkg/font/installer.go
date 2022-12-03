@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func validateFormat(file string) bool {
@@ -84,7 +85,10 @@ func InstallFromRemote(id string) error {
 
 	// download each style to a file with name: <family>-<style>.<format>
 	for _, style := range font.Styles {
-		dest := fmt.Sprintf("%s-%s.%s", font.Name, style.Type, "ttf")
+		// replace spaces with '-' to prevent any filepath issues
+		normalizedName := strings.ReplaceAll(font.Name, " ", "-")
+
+		dest := fmt.Sprintf("%s-%s.%s", normalizedName, style.Type, "ttf")
 
 		if err := DownloadFrom(style.Url, dest); err != nil {
 			return err
