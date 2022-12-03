@@ -189,12 +189,10 @@ func GetFontFolder(isGlobal bool) (string, error) {
 		}
 		// TODO: .local/share/fonts/fontman/_family_name_/
 		for i := 0; i < len(userPaths); i++ {
-			fmt.Println(userPaths[i])
 			if _, err := os.Stat(userPaths[i]); err == nil {
 				// TODO: actually make the fontman directory
 				installPath := filepath.Join(userPaths[i], "fontman")
 				// TODO: confirmation prompt here
-				fmt.Println("Installing to", installPath)
 				return installPath, nil
 			}
 		}

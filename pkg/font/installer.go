@@ -71,7 +71,7 @@ func InstallFont(file string, isGlobal bool) error {
 		return cacheErr
 	}
 
-	fmt.Printf("Successfully installed '%s' to %s! 🎉\n", fileName, installPath)
+	fmt.Printf("Successfully installed '%s' to '%s'!\n", fileName, installPath)
 
 	return nil
 }
@@ -88,9 +88,18 @@ func InstallFromRemote(id string) error {
 		// replace spaces with '-' to prevent any filepath issues
 		normalizedName := strings.ReplaceAll(font.Name, " ", "-")
 
+		// TODO: replace this with temp path in ~/.fontman
 		dest := fmt.Sprintf("%s-%s.%s", normalizedName, style.Type, "ttf")
 
+		// download the font to the working directory
 		if err := DownloadFrom(style.Url, dest); err != nil {
+			return err
+		}
+
+		// TODO: pass down isGlobal flag
+
+		// install the font to the system
+		if err := InstallFont(dest, false); err != nil {
 			return err
 		}
 	}
