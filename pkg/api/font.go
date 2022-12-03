@@ -39,3 +39,30 @@ func GetFontDetails(id string) (*model.RemoteFontFamily, error) {
 
 	return &font, nil
 }
+
+func GetFontOptions(name string) ([]model.RemoteFontFamily, error) {
+	url := fmt.Sprintf("%s/api/font?name=%s", BASE_URL, name)
+	response, getErr := http.Get(url)
+
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	defer response.Body.Close()
+
+	// read response to byte array
+	body, bodyErr := ioutil.ReadAll(response.Body)
+
+	if bodyErr != nil {
+		return nil, bodyErr
+	}
+
+	var fonts model.RemoteFontList
+	parseErr := json.Unmarshal(body, &fonts)
+
+	if parseErr != nil {
+		return nil, parseErr
+	}
+
+	return fonts.Fonts, nil
+}

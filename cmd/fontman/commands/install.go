@@ -3,13 +3,43 @@ package commands
 import (
 	"errors"
 	"fmt"
+	"strings"
+
+	"fontman/client/pkg/api"
 	"fontman/client/pkg/font"
+	"fontman/client/pkg/model"
 	"fontman/client/pkg/util"
 	"path/filepath"
 
 	"github.com/urfave/cli/v2"
-	// "log"
 )
+
+func selectionView(options []model.RemoteFontFamily) string {
+	view := strings.Builder{}
+
+	for i, option := range options {
+		view.WriteString(fmt.Sprintf("%d) %s [%s]\n", i + 1, option.Name, option.Id))
+	}
+
+	view.WriteString(fmt.Sprintf("\nSelect an option to install [1 - %d]:", len(options)))
+
+	return view.String()
+}
+
+// Poll user for a selection
+func selectOption(options []model.RemoteFontFamily) string {
+	var selection int
+	fmt.Scanf("%d", &selection)
+
+	// the values are 1-indexed to look more normal, so we need to adjust for this
+	selection -= 1
+
+	if selection < 0 || selection >= len(options) {
+		return ""
+	}
+
+	return options[selection].Id
+}
 
 // Called if 'install' subcommand is invoked.
 func onInstall(c *cli.Context, style string, excludeStyle string, global bool) error {
@@ -29,12 +59,29 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 	// test.ttf: local fille, test: remote file
 	ext := filepath.Ext(fileName)
 
-	// if there's an extensiuon, then we're trying to install from loccal
+	// if there's an extension, then we're trying to install from loccal
 	if len(ext) != 0 {
 		return font.InstallFont(fileName, global)
 	}
 
-	return font.InstallFromRemote("3cc5af2a-0fbd-4190-9889-e527abaf7df8")
+	options, _ := api.GetFontOptions(fileName)
+	var selectedId string
+
+	// more than one option? Ask the user which they want to install
+	if len(options) > 1 {
+		fmt.Println(selectionView(options))
+		selectedId = selectOption(options)
+
+		if len(selectedId) == 0 {
+			return errors.New(fmt.Sprintf("Invalid option selected.")) 
+		}
+	} else if len(options) == 1 {
+		selectedId = options[0].Id
+	} else {
+		return errors.New(fmt.Sprintf("No fonts found with name '%s'", fileName))
+	}
+
+	return font.InstallFromRemote(selectedId)
 }
 
 // Constructs the 'install' subcommand.
