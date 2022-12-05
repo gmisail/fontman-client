@@ -78,6 +78,7 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 
 	// no arguments: install from local `fontman.yml` file
 	if len(fileName) == 0 {
+		// TODO: add multiple options, i.e. fontman.yaml, FontmanFile
 		project := config.ReadProjectFile("fontman.yml")
 
 		// for each font, try to install from remote
