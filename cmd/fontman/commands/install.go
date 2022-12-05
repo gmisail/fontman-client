@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"fontman/client/pkg/api"
+	"fontman/client/pkg/config"
 	"fontman/client/pkg/font"
 	"fontman/client/pkg/model"
 	"fontman/client/pkg/util"
@@ -14,7 +15,12 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func selectionView(options []model.RemoteFontFamily) string {
+func selectFromList(options []model.RemoteFontFamily) string {
+	// one option? Don't bother showing a list
+	if len(options) == 1 {
+		return options[0].Id
+	}
+
 	view := strings.Builder{}
 
 	for i, option := range options {
@@ -22,12 +28,8 @@ func selectionView(options []model.RemoteFontFamily) string {
 	}
 
 	view.WriteString(fmt.Sprintf("\nSelect an option to install [1 - %d]:", len(options)))
+	fmt.Println(view.String())
 
-	return view.String()
-}
-
-// Poll user for a selection
-func selectOption(options []model.RemoteFontFamily) string {
 	var selection int
 	fmt.Scanf("%d", &selection)
 
@@ -41,6 +43,30 @@ func selectOption(options []model.RemoteFontFamily) string {
 	return options[selection].Id
 }
 
+// installRemote: fetches options, shows a selection view, and then installs based on user selection
+func installRemote(fileName string, global bool) error {
+	options, optionErr := api.GetFontOptions(fileName)
+	var id string
+
+	if optionErr != nil {
+		return optionErr
+	}
+
+	// more than one option? Ask the user which they want to install
+	if len(options) >= 1 {
+		id = selectFromList(options)
+
+		if len(id) == 0 {
+			return errors.New(fmt.Sprintf("Invalid option selected."))
+		}
+	} else {
+		// no options, throw error
+		return errors.New(fmt.Sprintf("No font found with name '%s'", fileName))
+	}
+
+	return font.InstallFromRemote(id, global)
+}
+
 // Called if 'install' subcommand is invoked.
 func onInstall(c *cli.Context, style string, excludeStyle string, global bool) error {
 	// if global flag is set, but user doesn't have permission
@@ -52,7 +78,16 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 
 	// no arguments: install from local `fontman.yml` file
 	if len(fileName) == 0 {
-		fmt.Println("TODO: Fetch from fontman.yml file...")
+		// TODO: add multiple options, i.e. fontman.yaml, FontmanFile
+		project := config.ReadProjectFile("fontman.yml")
+
+		// for each font, try to install from remote
+		for _, projectFont := range project.Fonts {
+			if err := installRemote(projectFont.Name, global); err != nil {
+				fmt.Println(err.Error())
+			}
+		}
+
 		return nil
 	}
 
@@ -64,26 +99,7 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 		return font.InstallFont(fileName, global)
 	}
 
-	options, _ := api.GetFontOptions(fileName)
-	var selectedId string
-
-	// more than one option? Ask the user which they want to install
-	if len(options) > 1 {
-		fmt.Println(selectionView(options))
-		selectedId = selectOption(options)
-
-		if len(selectedId) == 0 {
-			return errors.New(fmt.Sprintf("Invalid option selected."))
-		}
-	} else if len(options) == 1 {
-		// if there is only one option, don't bother presenting options
-		selectedId = options[0].Id
-	} else {
-		// no options, throw error
-		return errors.New(fmt.Sprintf("No fonts found with name '%s'", fileName))
-	}
-
-	return font.InstallFromRemote(selectedId, global)
+	return installRemote(fileName, global)
 }
 
 // Constructs the 'install' subcommand.
