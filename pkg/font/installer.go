@@ -54,8 +54,12 @@ func InstallFont(file string, isGlobal bool) error {
 	installPath := ""
 	configFile, err := util.ReadConfig()
 	if err != nil {
-		return err
+		err = util.GenerateConfig(isGlobal, false)
+		if err != nil {
+			return err
+		}
 	}
+
 	if isGlobal {
 		if len(configFile.GlobalInstallPath) == 0 {
 			return &errors.InstallationError{

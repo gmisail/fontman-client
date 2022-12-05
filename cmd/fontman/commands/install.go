@@ -50,6 +50,15 @@ func installRemote(fileName string, global bool) error {
 	configFile, err := util.ReadConfig()
 
 	if err != nil {
+		err = util.GenerateConfig(global, false)
+		if err != nil {
+			return err
+		}
+	}
+
+	// re-read the config to make sure RegistryAddress can be checked
+	configFile, err = util.ReadConfig()
+	if err != nil {
 		return err
 	}
 
