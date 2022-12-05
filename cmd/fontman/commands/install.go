@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"fontman/client/pkg/api"
+	"fontman/client/pkg/config"
 	"fontman/client/pkg/font"
 	"fontman/client/pkg/model"
 	"fontman/client/pkg/util"
@@ -52,7 +53,21 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 
 	// no arguments: install from local `fontman.yml` file
 	if len(fileName) == 0 {
-		fmt.Println("TODO: Fetch from fontman.yml file...")
+		project := config.ReadProjectFile("fontman.yml")
+
+		for _, projectFont := range project.Fonts {
+			options, _ := api.GetFontOptions(projectFont.Name)
+
+			// TODO: have user select which they'd like to download
+			if len(options) != 0 {
+				if err := font.InstallFromRemote(options[0].Id, global); err != nil {
+					return err
+				}
+			} else {
+				fmt.Printf("Can't find font with name '%s', ignoring.\n", projectFont.Name)
+			}
+		}
+
 		return nil
 	}
 
