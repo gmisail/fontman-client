@@ -43,52 +43,10 @@ func selectFromList(options []model.RemoteFontFamily) string {
 	return options[selection].Id
 }
 
-// Called if 'install' subcommand is invoked.
-func onInstall(c *cli.Context, style string, excludeStyle string, global bool) error {
-	// if global flag is set, but user doesn't have permission
-	if global && !util.CheckRoot() {
-		return errors.New("no root permission; run it again with sudo")
-	}
-
-	fileName := c.Args().Get(0)
-	var id string
-
-	// no arguments: install from local `fontman.yml` file
-	if len(fileName) == 0 {
-		project := config.ReadProjectFile("fontman.yml")
-
-		// for each font, try to install from remote
-		for _, projectFont := range project.Fonts {
-			options, _ := api.GetFontOptions(projectFont.Name)
-
-			if len(options) >= 1 {
-				id = selectFromList(options)
-
-				if len(id) == 0 {
-					return errors.New(fmt.Sprintf("Invalid option selected."))
-				}
-			} else {
-				fmt.Printf("No fonts found with name '%s', ignoring.\n", projectFont.Name)
-				continue
-			}
-
-			if err := font.InstallFromRemote(id, global); err != nil {
-				return err
-			}
-		}
-
-		return nil
-	}
-
-	// test.ttf: local file, test: remote file
-	ext := filepath.Ext(fileName)
-
-	// if there's an extension, then we're trying to install from local
-	if len(ext) != 0 {
-		return font.InstallFont(fileName, global)
-	}
-
+// installRemote: fetches options, shows a selection view, and then installs based on user selection
+func installRemote(fileName string, global bool) error {
 	options, optionErr := api.GetFontOptions(fileName)
+	var id string
 
 	if optionErr != nil {
 		return optionErr
@@ -103,10 +61,44 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 		}
 	} else {
 		// no options, throw error
-		return errors.New(fmt.Sprintf("No fonts found with name '%s'", fileName))
+		return errors.New(fmt.Sprintf("No font found with name '%s'", fileName))
 	}
 
 	return font.InstallFromRemote(id, global)
+}
+
+// Called if 'install' subcommand is invoked.
+func onInstall(c *cli.Context, style string, excludeStyle string, global bool) error {
+	// if global flag is set, but user doesn't have permission
+	if global && !util.CheckRoot() {
+		return errors.New("no root permission; run it again with sudo")
+	}
+
+	fileName := c.Args().Get(0)
+
+	// no arguments: install from local `fontman.yml` file
+	if len(fileName) == 0 {
+		project := config.ReadProjectFile("fontman.yml")
+
+		// for each font, try to install from remote
+		for _, projectFont := range project.Fonts {
+			if err := installRemote(projectFont.Name, global); err != nil {
+				fmt.Println(err.Error())
+			}
+		}
+
+		return nil
+	}
+
+	// test.ttf: local file, test: remote file
+	ext := filepath.Ext(fileName)
+
+	// if there's an extension, then we're trying to install from local
+	if len(ext) != 0 {
+		return font.InstallFont(fileName, global)
+	}
+
+	return installRemote(fileName, global)
 }
 
 // Constructs the 'install' subcommand.
