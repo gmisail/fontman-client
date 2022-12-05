@@ -15,7 +15,12 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func selectionView(options []model.RemoteFontFamily) string {
+func selectFromList(options []model.RemoteFontFamily) string {
+	// one option? Don't bother showing a list
+	if len(options) == 1 {
+		return options[0].Id
+	}
+
 	view := strings.Builder{}
 
 	for i, option := range options {
@@ -23,12 +28,8 @@ func selectionView(options []model.RemoteFontFamily) string {
 	}
 
 	view.WriteString(fmt.Sprintf("\nSelect an option to install [1 - %d]:", len(options)))
+	fmt.Println(view.String())
 
-	return view.String()
-}
-
-// Poll user for a selection
-func selectOption(options []model.RemoteFontFamily) string {
 	var selection int
 	fmt.Scanf("%d", &selection)
 
@@ -50,21 +51,29 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 	}
 
 	fileName := c.Args().Get(0)
+	var id string
 
 	// no arguments: install from local `fontman.yml` file
 	if len(fileName) == 0 {
 		project := config.ReadProjectFile("fontman.yml")
 
+		// for each font, try to install from remote
 		for _, projectFont := range project.Fonts {
 			options, _ := api.GetFontOptions(projectFont.Name)
 
-			// TODO: have user select which they'd like to download
-			if len(options) != 0 {
-				if err := font.InstallFromRemote(options[0].Id, global); err != nil {
-					return err
+			if len(options) >= 1 {
+				id = selectFromList(options)
+
+				if len(id) == 0 {
+					return errors.New(fmt.Sprintf("Invalid option selected."))
 				}
 			} else {
-				fmt.Printf("Can't find font with name '%s', ignoring.\n", projectFont.Name)
+				fmt.Printf("No fonts found with name '%s', ignoring.\n", projectFont.Name)
+				continue
+			}
+
+			if err := font.InstallFromRemote(id, global); err != nil {
+				return err
 			}
 		}
 
@@ -79,26 +88,25 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 		return font.InstallFont(fileName, global)
 	}
 
-	options, _ := api.GetFontOptions(fileName)
-	var selectedId string
+	options, optionErr := api.GetFontOptions(fileName)
+
+	if optionErr != nil {
+		return optionErr
+	}
 
 	// more than one option? Ask the user which they want to install
-	if len(options) > 1 {
-		fmt.Println(selectionView(options))
-		selectedId = selectOption(options)
+	if len(options) >= 1 {
+		id = selectFromList(options)
 
-		if len(selectedId) == 0 {
+		if len(id) == 0 {
 			return errors.New(fmt.Sprintf("Invalid option selected."))
 		}
-	} else if len(options) == 1 {
-		// if there is only one option, don't bother presenting options
-		selectedId = options[0].Id
 	} else {
 		// no options, throw error
 		return errors.New(fmt.Sprintf("No fonts found with name '%s'", fileName))
 	}
 
-	return font.InstallFromRemote(selectedId, global)
+	return font.InstallFromRemote(id, global)
 }
 
 // Constructs the 'install' subcommand.
