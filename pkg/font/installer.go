@@ -94,18 +94,9 @@ func InstallFont(file string, isGlobal bool) error {
 	return nil
 }
 
-func InstallFromRemote(id string, isGlobal bool) error {
-	configFile, err := util.ReadConfig()
-	if err != nil {
-		return err
-	}
-	if len(configFile.RegistryAddress) == 0 {
-		return &errors.InstallationError{
-			Message: fmt.Sprintf("Registry address is not initialized in config."),
-		}
-	}
+func InstallFromRemote(id string, baseUrl string, isGlobal bool) error {
+	font, err := api.GetFontDetails(id, baseUrl)
 
-	font, err := api.GetFontDetails(id, configFile.RegistryAddress)
 	if err != nil {
 		return err
 	}
@@ -116,6 +107,7 @@ func InstallFromRemote(id string, isGlobal bool) error {
 		normalizedName := strings.ReplaceAll(font.Name, " ", "-")
 
 		// TODO: replace this with temp path in ~/.fontman
+		// TODO: detect file type instead of assuming .ttf
 		dest := fmt.Sprintf("%s-%s.%s", normalizedName, style.Type, "ttf")
 
 		// download the font to the working directory

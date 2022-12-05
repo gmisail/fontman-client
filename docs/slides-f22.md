@@ -21,6 +21,7 @@ manager for fonts as well?
 ## Team
 
 - Graham Misail (Project Lead)
+- David Kim
 
 ---
 
@@ -115,7 +116,20 @@ fontman install
 
 ## Next Steps
 
-TBD.
+- User authentication
+  - Who can upload fonts?
+- `upload` command
+  - Add uploading from a file, instead of a REST endpoint
+- Font analytics
+  - Number of downloads, recently updated, etc...
+- I know it's a CLI app, but...
+  - Visual polish, clean up the interface
+  - Rewrite the visuals to use **BubbleTea**, a TUI framework
+- Web interface
+  - Similar to `npmjs.com` or `aur.archlinux.org`
+  - Browse & preview fonts
+  - Provide a download command
+    - `fontman install <UUID> <UUID> …`
 
 ---
 
