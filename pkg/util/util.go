@@ -136,6 +136,8 @@ func GenerateConfig(isGlobal bool, update bool) error {
 		configFile.LocalInstallPath = configDir
 	}
 
+	configFile.RegistryAddress = "https://fontman-registry.up.railway.app"
+
 	configData, err := yaml.Marshal(configFile)
 	if err != nil {
 		return err

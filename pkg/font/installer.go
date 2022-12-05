@@ -77,8 +77,17 @@ func InstallFont(file string, isGlobal bool) error {
 }
 
 func InstallFromRemote(id string, isGlobal bool) error {
-	font, err := api.GetFontDetails(id)
+	configFile, err := util.ReadConfig()
+	if err != nil {
+		return err
+	}
+	if len(configFile.RegistryAddress) == 0 {
+		return &errors.InstallationError{
+			Message: fmt.Sprintf("Registry address is not initialized in config."),
+		}
+	}
 
+	font, err := api.GetFontDetails(id, configFile.RegistryAddress)
 	if err != nil {
 		return err
 	}
