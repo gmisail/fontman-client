@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"fontman/client/pkg/model"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -23,7 +23,7 @@ func GetFontDetails(id string) (*model.RemoteFontFamily, error) {
 	defer response.Body.Close()
 
 	// read response to byte array
-	body, bodyErr := ioutil.ReadAll(response.Body)
+	body, bodyErr := io.ReadAll(response.Body)
 
 	if bodyErr != nil {
 		return nil, bodyErr
@@ -51,7 +51,7 @@ func GetFontOptions(name string) ([]model.RemoteFontFamily, error) {
 	defer response.Body.Close()
 
 	// read response to byte array
-	body, bodyErr := ioutil.ReadAll(response.Body)
+	body, bodyErr := io.ReadAll(response.Body)
 
 	if bodyErr != nil {
 		return nil, bodyErr

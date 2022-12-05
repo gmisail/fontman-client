@@ -5,7 +5,7 @@ import (
 	"fontman/client/pkg/api"
 	"fontman/client/pkg/errors"
 	"fontman/client/pkg/util"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -27,7 +27,7 @@ func DownloadFrom(url string, dest string) error {
 
 	defer response.Body.Close()
 
-	contents, readErr := ioutil.ReadAll(response.Body)
+	contents, readErr := io.ReadAll(response.Body)
 
 	if readErr != nil {
 		return readErr
