@@ -13,13 +13,28 @@ For testing, you can use the `task run` command; this will run a linter, run tes
 
 ## Installation
 
+### From source
+
+To build `fontman`, simply run `task build`. This will produce a binary in `/bin`. Move this binary to wherever binaries are installed on your system. For
+instance, on macOS you will run:
+
+```
+task build
+mv bin/fontman /usr/local/bin  
+fontman
+```
+
+### From package managers
+
 TBD.
 
 ## Usage
 
 ### Install from Remote
 
-TBD.
+```
+fontman install "Jetbrains Mono"
+```
 
 ### Install from `fontman.yml`
 
