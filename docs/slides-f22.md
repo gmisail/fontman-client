@@ -88,6 +88,8 @@ having system architecture discussions during class.)
 
 # Blockers
 
+---
+
 ## Linux is open sourced!
 
 - This allows us to have a great variety in distributions, which is awesome, however...
@@ -100,7 +102,7 @@ to the developers, to confirm details like permissions or folder structure.
 
 ## MacOS is... not open sourced! 
 - We encountered some issues on MacOS that were completely undocumented.
-- For example, /Library/Users/\_name_/Application Support/\_app_/ is no longer writeable since MacOS 12!
+- For example, `/Library/Users/\_name_/Application Support/\_app_/` is no longer writeable since MacOS 12!
 
 ```bash
 ⋊> ~/L/A/fontman: pwd
@@ -112,9 +114,6 @@ drwx------+ 87 meow  staff  2784 Dec  2 13:53 ../
 --wxr----x   1 meow  staff    51 Nov 21 18:08 config.yml*
 ```
 - We resolved this by using the Linux standard `~/.config/` to store our config file instead.
-
----
-
 
 ---
 
