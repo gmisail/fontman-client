@@ -93,7 +93,7 @@ func InstallFont(file string, isGlobal bool) error {
 		return cacheErr
 	}
 
-	fmt.Printf("Successfully installed '%s' to '%s'!\n", fileName, installPath)
+	fmt.Printf("Successfully installed '%s' to '%s'! 🎉\n", fileName, installPath)
 
 	return nil
 }
