@@ -3,10 +3,12 @@ package commands
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 
 	"fontman/client/pkg/api"
 	"fontman/client/pkg/config"
+	fontmanErr "fontman/client/pkg/errors"
 	"fontman/client/pkg/font"
 	"fontman/client/pkg/model"
 	"fontman/client/pkg/util"
@@ -45,7 +47,28 @@ func selectFromList(options []model.RemoteFontFamily) string {
 
 // installRemote: fetches options, shows a selection view, and then installs based on user selection
 func installRemote(fileName string, global bool) error {
-	options, optionErr := api.GetFontOptions(fileName)
+	configFile, err := util.ReadConfig()
+
+	if err != nil {
+		err = util.GenerateConfig(global, false)
+		if err != nil {
+			return err
+		}
+	}
+
+	// re-read the config to make sure RegistryAddress can be checked
+	configFile, err = util.ReadConfig()
+	if err != nil {
+		return err
+	}
+
+	if len(configFile.RegistryAddress) == 0 {
+		return &fontmanErr.InstallationError{
+			Message: "Registry address is not initialized in config.",
+		}
+	}
+
+	options, optionErr := api.GetFontOptions(fileName, configFile.RegistryAddress)
 	var id string
 
 	if optionErr != nil {
@@ -64,7 +87,7 @@ func installRemote(fileName string, global bool) error {
 		return errors.New(fmt.Sprintf("No font found with name '%s'", fileName))
 	}
 
-	return font.InstallFromRemote(id, global)
+	return font.InstallFromRemote(id, configFile.RegistryAddress, global)
 }
 
 // Called if 'install' subcommand is invoked.
@@ -116,7 +139,9 @@ func RegisterInstall() *cli.Command {
 			err := onInstall(c, style, excludeStyle, global)
 
 			if err != nil {
-				cli.Exit(err.Error(), 1)
+				log.Fatal(err.Error())
+
+				return err
 			}
 
 			return nil

@@ -84,7 +84,6 @@ func CreateConfigPath() (string, error) {
 		return "", err
 	} else {
 		// if fontman folder already exists
-		fmt.Println("fontman config folder already exists.")
 		return configPath, nil
 	}
 }
@@ -135,6 +134,8 @@ func GenerateConfig(isGlobal bool, update bool) error {
 	} else {
 		configFile.LocalInstallPath = configDir
 	}
+
+	configFile.RegistryAddress = "https://fontman-registry.up.railway.app"
 
 	configData, err := yaml.Marshal(configFile)
 	if err != nil {
@@ -189,9 +190,13 @@ func GetFontFolder(isGlobal bool) (string, error) {
 		}
 		// TODO: .local/share/fonts/fontman/_family_name_/
 		for i := 0; i < len(userPaths); i++ {
+			println(userPaths[i])
 			if _, err := os.Stat(userPaths[i]); err == nil {
 				// TODO: actually make the fontman directory
 				installPath := filepath.Join(userPaths[i], "fontman")
+				if err := os.Mkdir(installPath, 0755); !os.IsExist(err) {
+					return "", err
+				}
 				// TODO: confirmation prompt here
 				return installPath, nil
 			}
@@ -211,6 +216,9 @@ func GetFontFolder(isGlobal bool) (string, error) {
 		for i := 0; i < len(rootPaths); i++ {
 			if _, err := os.Stat(rootPaths[i]); err == nil {
 				installPath := filepath.Join(rootPaths[i], "fontman")
+				if err := os.Mkdir(installPath, 0755); err != nil {
+					return "", err
+				}
 				return installPath, nil
 			}
 		}

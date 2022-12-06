@@ -5,7 +5,7 @@ import (
 	"fontman/client/pkg/api"
 	"fontman/client/pkg/errors"
 	"fontman/client/pkg/util"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -27,7 +27,7 @@ func DownloadFrom(url string, dest string) error {
 
 	defer response.Body.Close()
 
-	contents, readErr := ioutil.ReadAll(response.Body)
+	contents, readErr := io.ReadAll(response.Body)
 
 	if readErr != nil {
 		return readErr
@@ -51,9 +51,31 @@ func InstallFont(file string, isGlobal bool) error {
 	}
 
 	// determine where to install the font
-	installPath, err := util.GetFontFolder(isGlobal)
+	installPath := ""
+	configFile, err := util.ReadConfig()
 	if err != nil {
-		return err
+		err = util.GenerateConfig(isGlobal, false)
+		if err != nil {
+			return err
+		}
+	}
+
+	if isGlobal {
+		if len(configFile.GlobalInstallPath) == 0 {
+			return &errors.InstallationError{
+				Message: fmt.Sprintf("Global install path in config is empty."),
+			}
+		} else {
+			installPath = configFile.GlobalInstallPath
+		}
+	} else {
+		if len(configFile.LocalInstallPath) == 0 {
+			return &errors.InstallationError{
+				Message: fmt.Sprintf("Local install path in config is empty."),
+			}
+		} else {
+			installPath = configFile.LocalInstallPath
+		}
 	}
 
 	fileName := filepath.Base(file)
@@ -71,13 +93,13 @@ func InstallFont(file string, isGlobal bool) error {
 		return cacheErr
 	}
 
-	fmt.Printf("Successfully installed '%s' to '%s'!\n", fileName, installPath)
+	fmt.Printf("Successfully installed '%s' to '%s'! 🎉\n", fileName, installPath)
 
 	return nil
 }
 
-func InstallFromRemote(id string, isGlobal bool) error {
-	font, err := api.GetFontDetails(id)
+func InstallFromRemote(id string, baseUrl string, isGlobal bool) error {
+	font, err := api.GetFontDetails(id, baseUrl)
 
 	if err != nil {
 		return err
@@ -89,6 +111,7 @@ func InstallFromRemote(id string, isGlobal bool) error {
 		normalizedName := strings.ReplaceAll(font.Name, " ", "-")
 
 		// TODO: replace this with temp path in ~/.fontman
+		// TODO: detect file type instead of assuming .ttf
 		dest := fmt.Sprintf("%s-%s.%s", normalizedName, style.Type, "ttf")
 
 		// download the font to the working directory

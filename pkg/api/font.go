@@ -4,16 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"fontman/client/pkg/model"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
-// TODO: load this from a remotes config variable, so: remotes: [ registry.fontman.io, http://196.1668... ]
-var BASE_URL string = "http://127.0.0.1:8080"
-
 // GetFontDetails: return details for a font with ID
-func GetFontDetails(id string) (*model.RemoteFontFamily, error) {
-	url := fmt.Sprintf("%s/api/font/%s", BASE_URL, id)
+func GetFontDetails(id string, baseUrl string) (*model.RemoteFontFamily, error) {
+	url := fmt.Sprintf("%s/api/font/%s", baseUrl, id)
 	response, getErr := http.Get(url)
 
 	if getErr != nil {
@@ -23,7 +20,7 @@ func GetFontDetails(id string) (*model.RemoteFontFamily, error) {
 	defer response.Body.Close()
 
 	// read response to byte array
-	body, bodyErr := ioutil.ReadAll(response.Body)
+	body, bodyErr := io.ReadAll(response.Body)
 
 	if bodyErr != nil {
 		return nil, bodyErr
@@ -40,8 +37,8 @@ func GetFontDetails(id string) (*model.RemoteFontFamily, error) {
 	return &font, nil
 }
 
-func GetFontOptions(name string) ([]model.RemoteFontFamily, error) {
-	url := fmt.Sprintf("%s/api/font?name=%s", BASE_URL, name)
+func GetFontOptions(name string, baseUrl string) ([]model.RemoteFontFamily, error) {
+	url := fmt.Sprintf("%s/api/font?name=%s", baseUrl, name)
 	response, getErr := http.Get(url)
 
 	if getErr != nil {
@@ -51,7 +48,7 @@ func GetFontOptions(name string) ([]model.RemoteFontFamily, error) {
 	defer response.Body.Close()
 
 	// read response to byte array
-	body, bodyErr := ioutil.ReadAll(response.Body)
+	body, bodyErr := io.ReadAll(response.Body)
 
 	if bodyErr != nil {
 		return nil, bodyErr

@@ -95,6 +95,7 @@ func TestReadConfig(t *testing.T) {
 	configFile, err := util.ReadConfig()
 	t.Log("Local install path is ", configFile.LocalInstallPath)
 	t.Log("Global install path is ", configFile.GlobalInstallPath)
+	t.Log("Registry address is ", configFile.RegistryAddress)
 	if err != nil {
 		t.Error("Read config failed with error: ", err)
 	}
