@@ -1,0 +1,8 @@
+name: "demo"
+fonts:
+  - name: "Fira Code"
+    styles: []
+  - name: "JetBrains Mono"
+    styles: []
+  - name: "Arvo"
+    styles: []

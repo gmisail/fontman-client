@@ -2,16 +2,24 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"fontman/client/pkg/model"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 // GetFontDetails: return details for a font with ID
 func GetFontDetails(id string, baseUrl string) (*model.RemoteFontFamily, error) {
-	url := fmt.Sprintf("%s/api/font/%s", baseUrl, id)
-	response, getErr := http.Get(url)
+	// build the URL, make sure all components are properly escaped
+	registryUrl, err := url.Parse(baseUrl)
+
+	if err != nil {
+		return nil, err
+	}
+
+	registryUrl.Path += "api/font/" + id
+
+	response, getErr := http.Get(registryUrl.String())
 
 	if getErr != nil {
 		return nil, getErr
@@ -38,8 +46,21 @@ func GetFontDetails(id string, baseUrl string) (*model.RemoteFontFamily, error) 
 }
 
 func GetFontOptions(name string, baseUrl string) ([]model.RemoteFontFamily, error) {
-	url := fmt.Sprintf("%s/api/font?name=%s", baseUrl, name)
-	response, getErr := http.Get(url)
+	// build the URL, make sure all components are properly escaped
+	registryUrl, err := url.Parse(baseUrl)
+
+	if err != nil {
+		return nil, err
+	}
+
+	registryUrl.Path += "api/font"
+
+	params := url.Values{}
+	params.Add("name", name)
+
+	registryUrl.RawQuery = params.Encode()
+
+	response, getErr := http.Get(registryUrl.String())
 
 	if getErr != nil {
 		return nil, getErr
