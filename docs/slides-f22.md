@@ -86,6 +86,38 @@ having system architecture discussions during class.)
 
 ---
 
+# Blockers
+
+## Linux is open sourced!
+
+- This allows us to have a great variety in distributions, which is awesome, however...
+- It also means that things aren't all standardized.
+- For example, the location where fonts are stored is different for each distro. 
+- We resolved this by reading distros' documentations and directly reaching out 
+to the developers, to confirm details like permissions or folder structure.
+
+---
+
+## MacOS is... not open sourced! 
+- We encountered some issues on MacOS that were completely undocumented.
+- For example, /Library/Users/\_name_/Application Support/\_app_/ is no longer writeable since MacOS 12!
+
+```bash
+⋊> ~/L/A/fontman: pwd
+/Users/meow/Library/Application Support/fontman
+⋊> ~/L/A/fontman: ls -la
+total 8
+drwxr-xr-x   3 meow  staff    96 Nov 21 11:37 ./
+drwx------+ 87 meow  staff  2784 Dec  2 13:53 ../
+--wxr----x   1 meow  staff    51 Nov 21 18:08 config.yml*
+```
+- We resolved this by using the Linux standard `~/.config/` to store our config file instead.
+
+---
+
+
+---
+
 # Demo
 
 ---
