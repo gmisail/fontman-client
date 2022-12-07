@@ -1,10 +1,15 @@
 package errors
 
+import (
+	"fmt"
+
+	"github.com/fatih/color"
+)
+
 type PermissionError struct {
 	Message string
 }
 
-// TODO: replace with a standard error format
 func (i PermissionError) Error() string {
-	panic(i.Message)
+	return color.RedString(fmt.Sprintf("Permission error: %s", i.Message))
 }

@@ -3,7 +3,6 @@ package commands
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 
 	"fontman/client/pkg/api"
@@ -102,7 +101,11 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 	// no arguments: install from local `fontman.yml` file
 	if len(fileName) == 0 {
 		// TODO: add multiple options, i.e. fontman.yaml, FontmanFile
-		project := config.ReadProjectFile("fontman.yml")
+		project, projectErr := config.ReadProjectFile("fontman.yml")
+
+		if projectErr != nil {
+			return projectErr
+		}
 
 		// for each font, try to install from remote
 		for _, projectFont := range project.Fonts {
@@ -139,8 +142,6 @@ func RegisterInstall() *cli.Command {
 			err := onInstall(c, style, excludeStyle, global)
 
 			if err != nil {
-				log.Fatal(err.Error())
-
 				return err
 			}
 
