@@ -11,5 +11,5 @@ type InstallationError struct {
 }
 
 func (i InstallationError) Error() string {
-	return color.RedString(fmt.Sprintf("Installation error: %s", i.Message))
+	return fmt.Sprintf("%s %s", color.RedString("Installation error:"), i.Message)
 }

@@ -11,5 +11,5 @@ type PermissionError struct {
 }
 
 func (i PermissionError) Error() string {
-	return color.RedString(fmt.Sprintf("Permission error: %s", i.Message))
+	return fmt.Sprintf("%s %s", color.RedString("Permission error:"), i.Message)
 }
