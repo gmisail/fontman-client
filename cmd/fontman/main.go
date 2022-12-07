@@ -26,7 +26,7 @@ func main() {
 	err := app.Run(os.Args)
 
 	if err != nil {
-		// write the error to STDERR before quitting
-		os.Stderr.WriteString(err.Error())
+		os.Stderr.WriteString(err.Error() + "\n")
+		os.Exit(1)
 	}
 }
