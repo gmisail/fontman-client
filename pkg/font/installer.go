@@ -107,12 +107,14 @@ func InstallFromRemote(id string, baseUrl string, isGlobal bool) error {
 
 	// download each style to a file with name: <family>-<style>.<format>
 	for _, style := range font.Styles {
-		// replace spaces with '-' to prevent any filepath issues
-		normalizedName := strings.ReplaceAll(font.Name, " ", "-")
-
 		// TODO: replace this with temp path in ~/.fontman
-		// TODO: detect file type instead of assuming .ttf
-		dest := fmt.Sprintf("%s-%s.%s", normalizedName, style.Type, "ttf")
+
+		// get the extension via the URL, i.e. https://fontprovider.com/arial.ttf
+		ext := filepath.Ext(style.Url)
+		dest := fmt.Sprintf("%s-%s%s", font.Name, style.Type, ext)
+
+		// replace spaces with '-' to prevent any filepath issues
+		dest = strings.ReplaceAll(dest, " ", "-")
 
 		// download the font to the working directory
 		if err := DownloadFrom(style.Url, dest); err != nil {
