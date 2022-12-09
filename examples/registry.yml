@@ -1,0 +1,8 @@
+name: "Comic Mono"
+license: "MIT"
+creator: "Shannon Miwa, dtinth"
+styles:
+  - name: "Regular"
+    url: "https://github.com/dtinth/comic-mono-font/raw/master/ComicMono.ttf"
+  - name: "Bold"
+    url: "https://github.com/dtinth/comic-mono-font/raw/master/ComicMono-Bold.ttf"
