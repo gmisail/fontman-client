@@ -1,11 +1,9 @@
 package util
 
-// we use log for now; should move to a more robust way when commands are finalized.
 import (
 	"errors"
 	"fmt"
 	"fontman/client/pkg/model"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -30,7 +28,6 @@ func Cache(verbose bool, force bool) error {
 	// pipe output into parser
 
 	if err != nil {
-		log.Fatal(err)
 		return err
 	}
 	return nil
@@ -41,8 +38,6 @@ func ListAll() (string, error) {
 	output, outputErr := cmd.Output()
 
 	if outputErr != nil {
-		log.Fatal(outputErr)
-
 		return "", outputErr
 	}
 
@@ -172,7 +167,6 @@ func SetupFolders(isGlobal bool) error {
 			return err
 		}
 	} else if err != nil {
-		log.Fatal(err)
 		return err
 	}
 

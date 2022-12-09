@@ -2,7 +2,6 @@ package main
 
 import (
 	"fontman/client/cmd/fontman/commands"
-	"log"
 	"os"
 
 	"github.com/urfave/cli/v2"
@@ -27,6 +26,7 @@ func main() {
 	err := app.Run(os.Args)
 
 	if err != nil {
-		log.Fatal(err)
+		os.Stderr.WriteString(err.Error() + "\n")
+		os.Exit(1)
 	}
 }

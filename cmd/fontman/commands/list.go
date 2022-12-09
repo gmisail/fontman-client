@@ -5,7 +5,6 @@ import (
 	"fontman/client/pkg/model"
 	"fontman/client/pkg/parser"
 	"fontman/client/pkg/util"
-	"log"
 	"sort"
 	"strings"
 
@@ -68,16 +67,12 @@ func onList(c *cli.Context, style string, global bool) error {
 	err := util.SetupFolders(global)
 
 	if err != nil {
-		log.Fatal(err)
-
 		return err
 	}
 
 	listOut, listOutErr := util.ListAll()
 
 	if listOutErr != nil {
-		log.Fatal(listOutErr)
-
 		return listOutErr
 	}
 

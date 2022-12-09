@@ -3,7 +3,6 @@ package commands
 import (
 	"fmt"
 	"fontman/client/pkg/util"
-	"log"
 
 	"github.com/urfave/cli/v2"
 )
@@ -13,8 +12,9 @@ func onUninstall(c *cli.Context, style string, ex_style string, global bool) err
 	err := util.SetupFolders(global)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
 	fmt.Println("Uninstalling font(s)...")
 
 	return nil

@@ -1,10 +1,15 @@
 package errors
 
+import (
+	"fmt"
+
+	"github.com/fatih/color"
+)
+
 type InstallationError struct {
 	Message string
 }
 
-// TODO: replace with a standard error format
 func (i InstallationError) Error() string {
-	panic(i.Message)
+	return fmt.Sprintf("%s %s", color.RedString("Installation error:"), i.Message)
 }
