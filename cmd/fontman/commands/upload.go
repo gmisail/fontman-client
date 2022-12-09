@@ -2,8 +2,9 @@ package commands
 
 import (
 	"errors"
-	"fmt"
+	"fontman/client/pkg/model"
 	"fontman/client/pkg/service"
+	"fontman/client/pkg/util"
 
 	"github.com/urfave/cli/v2"
 )
@@ -16,9 +17,20 @@ func onUpload(c *cli.Context) error {
 
 	fileName := c.Args().Get(0)
 
-	file, _ := service.ReadRegistryFile(fileName)
+	registryFile, readErr := model.ReadRegistryFile(fileName)
 
-	fmt.Println(file)
+	if readErr != nil {
+		return readErr
+	}
+
+	configFile, configReadErr := util.ReadConfig()
+	if configReadErr != nil {
+		return configReadErr
+	}
+
+	if err := service.UploadRegistryFile(*registryFile, configFile.RegistryAddress); err != nil {
+		return err
+	}
 
 	return nil
 }

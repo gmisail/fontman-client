@@ -14,8 +14,8 @@ type RegistryFile struct {
 }
 
 type RegistryStyle struct {
-	Name string `yaml:"name"`
-	Url  string `yaml:"url"`
+	Style string `yaml:"style"`
+	Url   string `yaml:"url"`
 }
 
 func ReadRegistryFile(path string) (*RegistryFile, error) {
