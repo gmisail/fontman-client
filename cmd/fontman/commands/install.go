@@ -3,12 +3,11 @@ package commands
 import (
 	"errors"
 	"fmt"
+	"fontman/client/pkg/service"
 	"strings"
 
 	"fontman/client/pkg/api"
-	"fontman/client/pkg/config"
 	fontmanErr "fontman/client/pkg/errors"
-	"fontman/client/pkg/font"
 	"fontman/client/pkg/model"
 	"fontman/client/pkg/util"
 	"path/filepath"
@@ -32,7 +31,11 @@ func selectFromList(options []model.RemoteFontFamily) string {
 	fmt.Println(view.String())
 
 	var selection int
-	fmt.Scanf("%d", &selection)
+	numScanned, _ := fmt.Scanf("%d", &selection)
+
+	if numScanned == 0 {
+		return options[0].Id
+	}
 
 	// the values are 1-indexed to look more normal, so we need to adjust for this
 	selection -= 1
@@ -86,7 +89,7 @@ func installRemote(fileName string, global bool) error {
 		return errors.New(fmt.Sprintf("No font found with name '%s'", fileName))
 	}
 
-	return font.InstallFromRemote(id, configFile.RegistryAddress, global)
+	return service.InstallFromRemote(id, configFile.RegistryAddress, global)
 }
 
 // Called if 'install' subcommand is invoked.
@@ -101,7 +104,7 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 	// no arguments: install from local `fontman.yml` file
 	if len(fileName) == 0 {
 		// TODO: add multiple options, i.e. fontman.yaml, FontmanFile
-		project, projectErr := config.ReadProjectFile("fontman.yml")
+		project, projectErr := model.ReadProjectFile("fontman.yml")
 
 		if projectErr != nil {
 			return projectErr
@@ -122,13 +125,13 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 
 	// if there's an extension, then we're trying to install from local
 	if len(ext) != 0 {
-		return font.InstallFont(fileName, global)
+		return service.InstallFont(fileName, global)
 	}
 
 	return installRemote(fileName, global)
 }
 
-// Constructs the 'install' subcommand.
+// RegisterInstall Constructs the 'install' subcommand.
 func RegisterInstall() *cli.Command {
 	// TODO: style/ex_style should be arrays of strings; look into how the lib handles multi-parameter argument
 	var style string

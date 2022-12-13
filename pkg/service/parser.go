@@ -1,4 +1,4 @@
-package parser
+package service
 
 import (
 	"fontman/client/pkg/model"

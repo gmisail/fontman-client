@@ -1,14 +1,13 @@
 package tests
 
 import (
-	"fontman/client/pkg/config"
 	"fontman/client/pkg/model"
 	"fontman/client/pkg/util"
 	"testing"
 )
 
 func TestProjectFile(t *testing.T) {
-	projectFile := config.ReadProjectFile("../config/testdata/valid_fontman.yml")
+	projectFile, _ := model.ReadProjectFile("../config/testdata/valid_fontman.yml")
 
 	if projectFile == nil {
 		t.Error("Failed to load / parse project file.")
@@ -24,7 +23,7 @@ func TestProjectFile(t *testing.T) {
 }
 
 func TestInvalidProjectFile(t *testing.T) {
-	projectFile := config.ReadProjectFile("../config/testdata/invalid_fontman.yml")
+	projectFile, _ := model.ReadProjectFile("../config/testdata/invalid_fontman.yml")
 
 	if projectFile != nil {
 		t.Error("Expected error to be thrown.")
@@ -32,7 +31,7 @@ func TestInvalidProjectFile(t *testing.T) {
 }
 
 func TestConfigFile(t *testing.T) {
-	configFile := config.ReadConfigFile("../config/testdata/valid_config.yml")
+	configFile, _ := model.ReadConfigFile("../config/testdata/valid_config.yml")
 	if configFile == nil {
 		t.Error("Failed to load / parse config file.")
 	}
@@ -47,7 +46,7 @@ func TestConfigFile(t *testing.T) {
 }
 
 func TestInvalidConfigFile(t *testing.T) {
-	configFile := config.ReadConfigFile("../config/testdata/invalid_config.yml")
+	configFile, _ := model.ReadConfigFile("../config/testdata/invalid_config.yml")
 
 	if configFile != nil {
 		t.Error("Expected error to be thrown.")

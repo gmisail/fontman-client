@@ -3,7 +3,7 @@ package commands
 import (
 	"fmt"
 	"fontman/client/pkg/model"
-	"fontman/client/pkg/parser"
+	"fontman/client/pkg/service"
 	"fontman/client/pkg/util"
 	"sort"
 	"strings"
@@ -77,7 +77,7 @@ func onList(c *cli.Context, style string, global bool) error {
 	}
 
 	// get all fonts and combine them based on family
-	names, fonts := showUnique(parser.ParseListLines(listOut))
+	names, fonts := showUnique(service.ParseListLines(listOut))
 
 	b := strings.Builder{}
 	for _, name := range names {
