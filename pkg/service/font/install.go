@@ -1,12 +1,9 @@
-package service
+package font
 
 import (
 	"fmt"
 	"fontman/client/pkg/api"
 	"fontman/client/pkg/errors"
-	"fontman/client/pkg/util"
-	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,25 +12,6 @@ import (
 func validateFormat(file string) bool {
 	fileType := filepath.Ext(file)
 	return fileType == ".ttf" || fileType == ".otf" || fileType == ".ttc"
-}
-
-// DownloadFrom: downloads file from 'url' and saves it as 'dest`
-func DownloadFrom(url string, dest string) error {
-	response, resErr := http.Get(url)
-
-	if resErr != nil {
-		return resErr
-	}
-
-	defer response.Body.Close()
-
-	contents, readErr := io.ReadAll(response.Body)
-
-	if readErr != nil {
-		return readErr
-	}
-
-	return os.WriteFile(dest, contents, 0777)
 }
 
 // InstallFont install a font either locally or globally & regenerate the cache.

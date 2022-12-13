@@ -3,8 +3,8 @@ package commands
 import (
 	"fmt"
 	"fontman/client/pkg/model"
-	"fontman/client/pkg/service"
-	"fontman/client/pkg/util"
+	"fontman/client/pkg/service/fontconfig"
+	"fontman/client/pkg/service/path"
 	"sort"
 	"strings"
 
@@ -64,20 +64,20 @@ func showUnique(fonts []*model.FontFamily) ([]string, map[string][]string) {
 
 // Called if 'list' subcommand is invoked.
 func onList(c *cli.Context, style string, global bool) error {
-	err := util.SetupFolders(global)
+	err := path.SetupFolders(global)
 
 	if err != nil {
 		return err
 	}
 
-	listOut, listOutErr := util.ListAll()
+	listOut, listOutErr := fontconfig.ListAll()
 
 	if listOutErr != nil {
 		return listOutErr
 	}
 
 	// get all fonts and combine them based on family
-	names, fonts := showUnique(service.ParseListLines(listOut))
+	names, fonts := showUnique(fontconfig.ParseListLines(listOut))
 
 	b := strings.Builder{}
 	for _, name := range names {

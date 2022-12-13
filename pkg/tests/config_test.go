@@ -2,7 +2,7 @@ package tests
 
 import (
 	"fontman/client/pkg/model"
-	"fontman/client/pkg/util"
+	"fontman/client/pkg/service/config"
 	"testing"
 )
 
@@ -54,7 +54,7 @@ func TestInvalidConfigFile(t *testing.T) {
 }
 
 func TestCreateConfigPath(t *testing.T) {
-	configPath, err := util.CreateConfigPath()
+	configPath, err := config.CreateConfigPath()
 	t.Log("configPath is ", configPath)
 	if err != nil {
 		t.Error("Couldn't create fontman config folder: ", err)
@@ -62,28 +62,28 @@ func TestCreateConfigPath(t *testing.T) {
 }
 
 func TestGenerateGlobalConfig(t *testing.T) {
-	err := util.GenerateConfig(true, false)
+	err := config.GenerateConfig(true, false)
 	if err != nil {
 		t.Error("Generate config failed with error: ", err)
 	}
 }
 
 func TestGenerateLocalConfig(t *testing.T) {
-	err := util.GenerateConfig(false, false)
+	err := config.GenerateConfig(false, false)
 	if err != nil {
 		t.Error("Generate config failed with error: ", err)
 	}
 }
 
 func TestUpdateGlobalConfig(t *testing.T) {
-	err := util.GenerateConfig(true, true)
+	err := config.GenerateConfig(true, true)
 	if err != nil {
 		t.Error("Generate config failed with error: ", err)
 	}
 }
 
 func TestUpdateLocalConfig(t *testing.T) {
-	err := util.GenerateConfig(false, true)
+	err := config.GenerateConfig(false, true)
 	if err != nil {
 		t.Error("Generate config failed with error: ", err)
 	}
@@ -91,7 +91,7 @@ func TestUpdateLocalConfig(t *testing.T) {
 
 func TestReadConfig(t *testing.T) {
 	configFile := model.ConfigFile{}
-	configFile, err := util.ReadConfig()
+	configFile, err := config.ReadConfig()
 	t.Log("Local install path is ", configFile.LocalInstallPath)
 	t.Log("Global install path is ", configFile.GlobalInstallPath)
 	t.Log("Registry address is ", configFile.RegistryAddress)

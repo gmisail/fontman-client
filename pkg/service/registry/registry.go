@@ -1,4 +1,4 @@
-package service
+package registry
 
 import (
 	"fontman/client/pkg/api"

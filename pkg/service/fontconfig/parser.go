@@ -1,4 +1,4 @@
-package service
+package fontconfig
 
 import (
 	"fontman/client/pkg/model"

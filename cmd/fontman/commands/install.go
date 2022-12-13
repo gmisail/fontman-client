@@ -4,12 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"fontman/client/pkg/service"
+	"fontman/client/pkg/service/config"
+	"fontman/client/pkg/service/font"
 	"strings"
 
 	"fontman/client/pkg/api"
 	fontmanErr "fontman/client/pkg/errors"
 	"fontman/client/pkg/model"
-	"fontman/client/pkg/util"
 	"path/filepath"
 
 	"github.com/urfave/cli/v2"
@@ -49,19 +50,19 @@ func selectFromList(options []model.RemoteFontFamily) string {
 
 // installRemote: fetches options, shows a selection view, and then installs based on user selection
 func installRemote(fileName string, global bool) error {
-	configFile, err := util.ReadConfig()
+	configFile, err := config.ReadConfig()
 
 	if err != nil {
-		err = util.GenerateConfig(global, false)
+		err = config.GenerateConfig(global, false)
 		if err != nil {
 			return err
 		}
-	}
 
-	// re-read the config to make sure RegistryAddress can be checked
-	configFile, err = util.ReadConfig()
-	if err != nil {
-		return err
+		// re-read the config to make sure RegistryAddress can be checked
+		configFile, err = config.ReadConfig()
+		if err != nil {
+			return err
+		}
 	}
 
 	if len(configFile.RegistryAddress) == 0 {
@@ -89,13 +90,13 @@ func installRemote(fileName string, global bool) error {
 		return errors.New(fmt.Sprintf("No font found with name '%s'", fileName))
 	}
 
-	return service.InstallFromRemote(id, configFile.RegistryAddress, global)
+	return font.InstallFromRemote(id, configFile.RegistryAddress, global)
 }
 
 // Called if 'install' subcommand is invoked.
 func onInstall(c *cli.Context, style string, excludeStyle string, global bool) error {
 	// if global flag is set, but user doesn't have permission
-	if global && !util.CheckRoot() {
+	if global && !service.CheckRoot() {
 		return errors.New("no root permission; run it again with sudo")
 	}
 
@@ -125,7 +126,7 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 
 	// if there's an extension, then we're trying to install from local
 	if len(ext) != 0 {
-		return service.InstallFont(fileName, global)
+		return font.InstallFont(fileName, global)
 	}
 
 	return installRemote(fileName, global)
