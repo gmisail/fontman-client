@@ -16,8 +16,6 @@ func RunCache(verbose bool, force bool) error {
 	cmd := exec.Command("fc-cache", flags...)
 	err := cmd.Run()
 
-	// pipe output into parser
-
 	if err != nil {
 		return err
 	}

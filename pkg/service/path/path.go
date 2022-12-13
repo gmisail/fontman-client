@@ -9,7 +9,7 @@ import (
 
 // first time setup function. generates fontman config file if it doesn't exist.
 func SetupFolders(isGlobal bool) error {
-	configPathDir, err := config.CreateConfigPath()
+	configPathDir, err := config.CreatePath()
 	if err != nil {
 		return err
 	}
@@ -17,7 +17,7 @@ func SetupFolders(isGlobal bool) error {
 	configDir := filepath.Join(configPathDir, "config.yml")
 	if _, err := os.Stat(configDir); errors.Is(err, os.ErrNotExist) {
 		// if config doesn't exist, generate it.
-		err := config.GenerateConfig(isGlobal, false)
+		err := config.Generate(isGlobal, false)
 		if err != nil {
 			return err
 		}

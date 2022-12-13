@@ -11,7 +11,7 @@ import (
 )
 
 // Create .config/fontman and return it; if it already exists, return it.
-func CreateConfigPath() (string, error) {
+func CreatePath() (string, error) {
 	// home folder should _really_ exist
 	configPath, err := os.UserHomeDir()
 	if err != nil {
@@ -49,10 +49,10 @@ func CreateConfigPath() (string, error) {
 	}
 }
 
-func ReadConfig() (model.ConfigFile, error) {
+func Read() (model.ConfigFile, error) {
 	// ReadConfig assumes that the config file already exists.
 	configFile := model.ConfigFile{}
-	configPath, err := CreateConfigPath()
+	configPath, err := CreatePath()
 	if err != nil {
 		return configFile, err
 	}
@@ -75,7 +75,7 @@ func ReadConfig() (model.ConfigFile, error) {
 }
 
 // GenerateConfig only initializes one of the two InstallPath fields
-func GenerateConfig(isGlobal bool, update bool) error {
+func Generate(isGlobal bool, update bool) error {
 	configDir, err := path.GetFontFolder(isGlobal)
 	// if no valid folder found, return err
 	if err != nil {
@@ -84,7 +84,7 @@ func GenerateConfig(isGlobal bool, update bool) error {
 
 	configFile := model.ConfigFile{}
 	if update {
-		configFile, err = ReadConfig()
+		configFile, err = Read()
 		if err != nil {
 			return err
 		}
@@ -103,7 +103,7 @@ func GenerateConfig(isGlobal bool, update bool) error {
 		return err
 	}
 
-	configFilePath, err := CreateConfigPath()
+	configFilePath, err := CreatePath()
 	if err != nil {
 		return err
 	}

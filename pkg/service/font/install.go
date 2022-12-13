@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"fontman/client/pkg/api"
 	"fontman/client/pkg/errors"
+	"fontman/client/pkg/service/config"
+	"fontman/client/pkg/service/fontconfig"
 	"os"
 	"path/filepath"
 	"strings"
@@ -30,9 +32,9 @@ func InstallFont(file string, isGlobal bool) error {
 
 	// determine where to install the font
 	installPath := ""
-	configFile, err := util.ReadConfig()
+	configFile, err := config.Read()
 	if err != nil {
-		err = util.GenerateConfig(isGlobal, false)
+		err = config.Generate(isGlobal, false)
 		if err != nil {
 			return err
 		}
@@ -66,7 +68,7 @@ func InstallFont(file string, isGlobal bool) error {
 	}
 
 	// after installation, attempt to regenerate the cache
-	cacheErr := util.Cache(false, false)
+	cacheErr := fontconfig.RunCache(false, false)
 	if cacheErr != nil {
 		return cacheErr
 	}
