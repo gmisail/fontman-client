@@ -54,7 +54,7 @@ func TestInvalidConfigFile(t *testing.T) {
 }
 
 func TestCreateConfigPath(t *testing.T) {
-	configPath, err := config.CreatePath()
+	configPath, err := config.CreateConfigDirectory()
 	t.Log("configPath is ", configPath)
 	if err != nil {
 		t.Error("Couldn't create fontman config folder: ", err)

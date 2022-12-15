@@ -4,14 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"fontman/client/pkg/model"
-	"fontman/client/pkg/service/path"
-	"github.com/goccy/go-yaml"
 	"os"
 	"path/filepath"
+
+	"github.com/goccy/go-yaml"
 )
 
 // Create .config/fontman and return it; if it already exists, return it.
-func CreatePath() (string, error) {
+func CreateConfigDirectory() (string, error) {
 	// home folder should _really_ exist
 	configPath, err := os.UserHomeDir()
 	if err != nil {
@@ -52,7 +52,7 @@ func CreatePath() (string, error) {
 func Read() (model.ConfigFile, error) {
 	// ReadConfig assumes that the config file already exists.
 	configFile := model.ConfigFile{}
-	configPath, err := CreatePath()
+	configPath, err := CreateConfigDirectory()
 	if err != nil {
 		return configFile, err
 	}
@@ -76,7 +76,7 @@ func Read() (model.ConfigFile, error) {
 
 // GenerateConfig only initializes one of the two InstallPath fields
 func Generate(isGlobal bool, update bool) error {
-	configDir, err := path.GetFontFolder(isGlobal)
+	configDir, err := GetFontFolder(isGlobal)
 	// if no valid folder found, return err
 	if err != nil {
 		return err
@@ -103,7 +103,7 @@ func Generate(isGlobal bool, update bool) error {
 		return err
 	}
 
-	configFilePath, err := CreatePath()
+	configFilePath, err := CreateConfigDirectory()
 	if err != nil {
 		return err
 	}

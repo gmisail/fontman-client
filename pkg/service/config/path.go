@@ -1,15 +1,14 @@
-package path
+package config
 
 import (
 	"errors"
-	"fontman/client/pkg/service/config"
 	"os"
 	"path/filepath"
 )
 
 // first time setup function. generates fontman config file if it doesn't exist.
 func SetupFolders(isGlobal bool) error {
-	configPathDir, err := config.CreatePath()
+	configPathDir, err := CreateConfigDirectory()
 	if err != nil {
 		return err
 	}
@@ -17,7 +16,7 @@ func SetupFolders(isGlobal bool) error {
 	configDir := filepath.Join(configPathDir, "config.yml")
 	if _, err := os.Stat(configDir); errors.Is(err, os.ErrNotExist) {
 		// if config doesn't exist, generate it.
-		err := config.Generate(isGlobal, false)
+		err := Generate(isGlobal, false)
 		if err != nil {
 			return err
 		}

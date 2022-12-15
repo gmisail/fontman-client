@@ -3,8 +3,8 @@ package commands
 import (
 	"fmt"
 	"fontman/client/pkg/model"
+	"fontman/client/pkg/service/config"
 	"fontman/client/pkg/service/registry"
-	"fontman/client/pkg/util"
 
 	"github.com/urfave/cli/v2"
 )
@@ -24,7 +24,7 @@ func onUpload(c *cli.Context) error {
 		return readErr
 	}
 
-	configFile, configReadErr := util.ReadConfig()
+	configFile, configReadErr := config.Read()
 	if configReadErr != nil {
 		return configReadErr
 	}
