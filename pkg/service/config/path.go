@@ -73,12 +73,8 @@ func SetupFolders(isGlobal bool) error {
 func GetFontFolder(isGlobal bool) (string, error) {
 	if !isGlobal {
 		homePath, _ := os.UserHomeDir()
-		userPaths := []string{
-			filepath.Join(homePath, ".local", "share", "fonts"),
-			filepath.Join(homePath, ".fonts"),
-			// TODO: os detection at compile time - build constraints
-			filepath.Join(homePath, "Library", "Fonts"),
-		}
+		userPaths := GetLocalFontPaths(homePath)
+
 		// TODO: .local/share/fonts/fontman/_family_name_/
 		for i := 0; i < len(userPaths); i++ {
 			println(userPaths[i])
@@ -98,12 +94,8 @@ func GetFontFolder(isGlobal bool) (string, error) {
 	} else {
 		// if global, install to /usr/local/share/fonts, etc.
 		rootPath := "/"
-		rootPaths := []string{
-			filepath.Join(rootPath, "usr", "local", "share", "fonts"),
-			filepath.Join(rootPath, "usr", "share", "fonts"),
-			// TODO: os detection at compile time - build constraints
-			filepath.Join(rootPath, "Library", "Fonts"),
-		}
+		rootPaths := GetGlobalFontPaths(rootPath)
+
 		for i := 0; i < len(rootPaths); i++ {
 			if _, err := os.Stat(rootPaths[i]); err == nil {
 				installPath := filepath.Join(rootPaths[i], "fontman")
