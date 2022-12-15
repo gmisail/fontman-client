@@ -83,11 +83,11 @@ func installRemote(fileName string, global bool) error {
 		id = selectFromList(options)
 
 		if len(id) == 0 {
-			return errors.New(fmt.Sprintf("Invalid option selected."))
+			return errors.New("Invalid option selected.")
 		}
 	} else {
 		// no options, throw error
-		return errors.New(fmt.Sprintf("No font found with name '%s'", fileName))
+		return fmt.Errorf("No font found with name '%s'", fileName)
 	}
 
 	return font.InstallFromRemote(id, configFile.RegistryAddress, global)

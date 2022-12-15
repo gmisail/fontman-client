@@ -43,7 +43,7 @@ func InstallFont(file string, isGlobal bool) error {
 	if isGlobal {
 		if len(configFile.GlobalInstallPath) == 0 {
 			return &errors.InstallationError{
-				Message: fmt.Sprintf("Global install path in config is empty."),
+				Message: "Global install path in config is empty.",
 			}
 		} else {
 			installPath = configFile.GlobalInstallPath
@@ -51,7 +51,7 @@ func InstallFont(file string, isGlobal bool) error {
 	} else {
 		if len(configFile.LocalInstallPath) == 0 {
 			return &errors.InstallationError{
-				Message: fmt.Sprintf("Local install path in config is empty."),
+				Message: "Local install path in config is empty.",
 			}
 		} else {
 			installPath = configFile.LocalInstallPath

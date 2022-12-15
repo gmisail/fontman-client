@@ -12,9 +12,7 @@ import (
 // Called if 'upload' subcommand is invoked.
 func onUpload(c *cli.Context) error {
 	if c.Args().Len() == 0 {
-		cli.ShowCommandHelp(c, "upload")
-
-		return nil
+		return cli.ShowCommandHelp(c, "upload")
 	}
 
 	fileName := c.Args().Get(0)
