@@ -2,9 +2,9 @@ package model
 
 const (
 	OTF  string = "otf"
-	TTF         = "ttf"
-	TTC         = "ttc"
-	NONE        = "none"
+	TTF  string = "ttf"
+	TTC  string = "ttc"
+	NONE string = "none"
 )
 
 type FontFamily struct {

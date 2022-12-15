@@ -3,14 +3,14 @@ package commands
 import (
 	"errors"
 	"fmt"
+	"fontman/client/pkg/service/config"
+	"fontman/client/pkg/service/font"
+	"fontman/client/pkg/util"
 	"strings"
 
 	"fontman/client/pkg/api"
-	"fontman/client/pkg/config"
 	fontmanErr "fontman/client/pkg/errors"
-	"fontman/client/pkg/font"
 	"fontman/client/pkg/model"
-	"fontman/client/pkg/util"
 	"path/filepath"
 
 	"github.com/urfave/cli/v2"
@@ -32,7 +32,11 @@ func selectFromList(options []model.RemoteFontFamily) string {
 	fmt.Println(view.String())
 
 	var selection int
-	fmt.Scanf("%d", &selection)
+	numScanned, _ := fmt.Scanf("%d", &selection)
+
+	if numScanned == 0 {
+		return options[0].Id
+	}
 
 	// the values are 1-indexed to look more normal, so we need to adjust for this
 	selection -= 1
@@ -46,19 +50,19 @@ func selectFromList(options []model.RemoteFontFamily) string {
 
 // installRemote: fetches options, shows a selection view, and then installs based on user selection
 func installRemote(fileName string, global bool) error {
-	configFile, err := util.ReadConfig()
+	configFile, err := config.Read()
 
 	if err != nil {
-		err = util.GenerateConfig(global, false)
+		err = config.Generate(global, false)
 		if err != nil {
 			return err
 		}
-	}
 
-	// re-read the config to make sure RegistryAddress can be checked
-	configFile, err = util.ReadConfig()
-	if err != nil {
-		return err
+		// re-read the config to make sure RegistryAddress can be checked
+		configFile, err = config.Read()
+		if err != nil {
+			return err
+		}
 	}
 
 	if len(configFile.RegistryAddress) == 0 {
@@ -79,11 +83,11 @@ func installRemote(fileName string, global bool) error {
 		id = selectFromList(options)
 
 		if len(id) == 0 {
-			return errors.New(fmt.Sprintf("Invalid option selected."))
+			return errors.New("Invalid option selected.")
 		}
 	} else {
 		// no options, throw error
-		return errors.New(fmt.Sprintf("No font found with name '%s'", fileName))
+		return fmt.Errorf("No font found with name '%s'", fileName)
 	}
 
 	return font.InstallFromRemote(id, configFile.RegistryAddress, global)
@@ -101,7 +105,7 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 	// no arguments: install from local `fontman.yml` file
 	if len(fileName) == 0 {
 		// TODO: add multiple options, i.e. fontman.yaml, FontmanFile
-		project, projectErr := config.ReadProjectFile("fontman.yml")
+		project, projectErr := model.ReadProjectFile("fontman.yml")
 
 		if projectErr != nil {
 			return projectErr
@@ -128,7 +132,7 @@ func onInstall(c *cli.Context, style string, excludeStyle string, global bool) e
 	return installRemote(fileName, global)
 }
 
-// Constructs the 'install' subcommand.
+// RegisterInstall Constructs the 'install' subcommand.
 func RegisterInstall() *cli.Command {
 	// TODO: style/ex_style should be arrays of strings; look into how the lib handles multi-parameter argument
 	var style string

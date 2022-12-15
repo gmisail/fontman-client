@@ -2,14 +2,14 @@ package commands
 
 import (
 	"fmt"
-	"fontman/client/pkg/util"
+	"fontman/client/pkg/service/config"
 
 	"github.com/urfave/cli/v2"
 )
 
 // Called if 'uninstall' subcommand is invoked.
 func onUninstall(c *cli.Context, style string, ex_style string, global bool) error {
-	err := util.SetupFolders(global)
+	err := config.SetupFolders(global)
 
 	if err != nil {
 		return err

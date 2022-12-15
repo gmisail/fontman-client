@@ -3,13 +3,15 @@ package commands
 import (
 	"fmt"
 	"fontman/client/pkg/model"
-	"fontman/client/pkg/parser"
-	"fontman/client/pkg/util"
+	"fontman/client/pkg/service/config"
+	"fontman/client/pkg/service/fontconfig"
 	"sort"
 	"strings"
 
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 /*
@@ -25,6 +27,9 @@ func showUnique(fonts []*model.FontFamily) ([]string, map[string][]string) {
 
 	// unique font family names
 	names := []string{}
+
+	// convert to title based on English
+	caser := cases.Title(language.English)
 
 	// for each font, find all *unique* styles & combine common font families.
 	for _, font := range fonts {
@@ -47,7 +52,7 @@ func showUnique(fonts []*model.FontFamily) ([]string, map[string][]string) {
 				uniqueStyles[font.Name][style.Name] = struct{}{}
 			}
 
-			names = append(names, strings.Title(font.Name))
+			names = append(names, caser.String(font.Name))
 		}
 	}
 
@@ -64,20 +69,20 @@ func showUnique(fonts []*model.FontFamily) ([]string, map[string][]string) {
 
 // Called if 'list' subcommand is invoked.
 func onList(c *cli.Context, style string, global bool) error {
-	err := util.SetupFolders(global)
+	err := config.SetupFolders(global)
 
 	if err != nil {
 		return err
 	}
 
-	listOut, listOutErr := util.ListAll()
+	listOut, listOutErr := fontconfig.ListAll()
 
 	if listOutErr != nil {
 		return listOutErr
 	}
 
 	// get all fonts and combine them based on family
-	names, fonts := showUnique(parser.ParseListLines(listOut))
+	names, fonts := showUnique(fontconfig.ParseListLines(listOut))
 
 	b := strings.Builder{}
 	for _, name := range names {

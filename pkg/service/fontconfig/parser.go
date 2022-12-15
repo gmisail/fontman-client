@@ -1,4 +1,4 @@
-package parser
+package fontconfig
 
 import (
 	"fontman/client/pkg/model"

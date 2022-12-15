@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"fontman/client/pkg/api"
 	"fontman/client/pkg/errors"
-	"fontman/client/pkg/util"
-	"io"
-	"net/http"
+	"fontman/client/pkg/service/config"
+	"fontman/client/pkg/service/fontconfig"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,25 +14,6 @@ import (
 func validateFormat(file string) bool {
 	fileType := filepath.Ext(file)
 	return fileType == ".ttf" || fileType == ".otf" || fileType == ".ttc"
-}
-
-// DownloadFrom: downloads file from 'url' and saves it as 'dest`
-func DownloadFrom(url string, dest string) error {
-	response, resErr := http.Get(url)
-
-	if resErr != nil {
-		return resErr
-	}
-
-	defer response.Body.Close()
-
-	contents, readErr := io.ReadAll(response.Body)
-
-	if readErr != nil {
-		return readErr
-	}
-
-	return os.WriteFile(dest, contents, 0777)
 }
 
 // InstallFont install a font either locally or globally & regenerate the cache.
@@ -52,9 +32,9 @@ func InstallFont(file string, isGlobal bool) error {
 
 	// determine where to install the font
 	installPath := ""
-	configFile, err := util.ReadConfig()
+	configFile, err := config.Read()
 	if err != nil {
-		err = util.GenerateConfig(isGlobal, false)
+		err = config.Generate(isGlobal, false)
 		if err != nil {
 			return err
 		}
@@ -63,7 +43,7 @@ func InstallFont(file string, isGlobal bool) error {
 	if isGlobal {
 		if len(configFile.GlobalInstallPath) == 0 {
 			return &errors.InstallationError{
-				Message: fmt.Sprintf("Global install path in config is empty."),
+				Message: "Global install path in config is empty.",
 			}
 		} else {
 			installPath = configFile.GlobalInstallPath
@@ -71,7 +51,7 @@ func InstallFont(file string, isGlobal bool) error {
 	} else {
 		if len(configFile.LocalInstallPath) == 0 {
 			return &errors.InstallationError{
-				Message: fmt.Sprintf("Local install path in config is empty."),
+				Message: "Local install path in config is empty.",
 			}
 		} else {
 			installPath = configFile.LocalInstallPath
@@ -88,7 +68,7 @@ func InstallFont(file string, isGlobal bool) error {
 	}
 
 	// after installation, attempt to regenerate the cache
-	cacheErr := util.Cache(false, false)
+	cacheErr := fontconfig.RunCache(false, false)
 	if cacheErr != nil {
 		return cacheErr
 	}

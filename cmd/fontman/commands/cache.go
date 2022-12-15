@@ -2,7 +2,7 @@ package commands
 
 import (
 	"fmt"
-	"fontman/client/pkg/util"
+	"fontman/client/pkg/service/fontconfig"
 	"github.com/urfave/cli/v2"
 )
 
@@ -10,7 +10,7 @@ import (
 func onCache(c *cli.Context, verbose bool, force bool) error {
 	fmt.Println("cache some font(s)...")
 	fmt.Println(verbose, force)
-	err := util.Cache(verbose, force)
+	err := fontconfig.RunCache(verbose, force)
 	if err != nil {
 		return err
 	}

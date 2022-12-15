@@ -1,51 +1,15 @@
-package util
+package config
 
 import (
 	"errors"
 	"fmt"
-	"fontman/client/pkg/model"
 	"os"
-	"os/exec"
 	"path/filepath"
-
-	"github.com/goccy/go-yaml"
 )
 
-func Cache(verbose bool, force bool) error {
-	var flags []string
-
-	if verbose {
-		flags = append(flags, "-v")
-	}
-
-	if force {
-		flags = append(flags, "-f")
-	}
-
-	cmd := exec.Command("fc-cache", flags...)
-	err := cmd.Run()
-
-	// pipe output into parser
-
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func ListAll() (string, error) {
-	cmd := exec.Command("fc-list", ":", "family", "style", "file")
-	output, outputErr := cmd.Output()
-
-	if outputErr != nil {
-		return "", outputErr
-	}
-
-	return string(output), nil
-}
-
-// Create .config/fontman and return it; if it already exists, return it.
-func CreateConfigPath() (string, error) {
+// CreateConfigDirectory creates a configuration directory,
+// if it does not exist.
+func CreateConfigDirectory() (string, error) {
 	// home folder should _really_ exist
 	configPath, err := os.UserHomeDir()
 	if err != nil {
@@ -83,78 +47,10 @@ func CreateConfigPath() (string, error) {
 	}
 }
 
-func ReadConfig() (model.ConfigFile, error) {
-	// ReadConfig assumes that the config file already exists.
-	configFile := model.ConfigFile{}
-	configPath, err := CreateConfigPath()
-	if err != nil {
-		return configFile, err
-	}
-	configPath = filepath.Join(configPath, "config.yml")
-	if _, err := os.Stat(configPath); err != nil {
-		return configFile, err
-	} else {
-		// if config exists, read it
-		contents, fileErr := os.ReadFile(configPath)
-		if fileErr != nil {
-			return configFile, fileErr
-		}
-
-		// parse the config and return it
-		if parseErr := yaml.Unmarshal(contents, &configFile); parseErr != nil {
-			return configFile, parseErr
-		}
-		return configFile, nil
-	}
-}
-
-// GenerateConfig only initializes one of the two InstallPath fields
-func GenerateConfig(isGlobal bool, update bool) error {
-	configDir, err := GetFontFolder(isGlobal)
-	// if no valid folder found, return err
-	if err != nil {
-		return err
-	}
-
-	configFile := model.ConfigFile{}
-	if update {
-		configFile, err = ReadConfig()
-		if err != nil {
-			return err
-		}
-	}
-
-	if isGlobal {
-		configFile.GlobalInstallPath = configDir
-	} else {
-		configFile.LocalInstallPath = configDir
-	}
-
-	configFile.RegistryAddress = "https://fontman-registry.up.railway.app"
-
-	configData, err := yaml.Marshal(configFile)
-	if err != nil {
-		return err
-	}
-
-	configFilePath, err := CreateConfigPath()
-	if err != nil {
-		return err
-	}
-
-	configFilePath = filepath.Join(configFilePath, "config.yml")
-	err = os.WriteFile(configFilePath, configData, 0755)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// first time setup function. generates fontman config file if it doesn't exist.
+// SetupFolders will setup the necessary files & folders for the program
+// to operate. Creates a configuration file if one does not exist.
 func SetupFolders(isGlobal bool) error {
-
-	configPathDir, err := CreateConfigPath()
+	configPathDir, err := CreateConfigDirectory()
 	if err != nil {
 		return err
 	}
@@ -162,7 +58,7 @@ func SetupFolders(isGlobal bool) error {
 	configDir := filepath.Join(configPathDir, "config.yml")
 	if _, err := os.Stat(configDir); errors.Is(err, os.ErrNotExist) {
 		// if config doesn't exist, generate it.
-		err := GenerateConfig(isGlobal, false)
+		err := Generate(isGlobal, false)
 		if err != nil {
 			return err
 		}
@@ -173,6 +69,7 @@ func SetupFolders(isGlobal bool) error {
 	return nil
 }
 
+// GetFontFolder gets the font directory for the current system.
 func GetFontFolder(isGlobal bool) (string, error) {
 	if !isGlobal {
 		homePath, _ := os.UserHomeDir()
@@ -220,11 +117,4 @@ func GetFontFolder(isGlobal bool) (string, error) {
 		// TODO: should alert the user that no valid path exists
 		return "", os.ErrNotExist
 	}
-}
-
-func CheckRoot() bool {
-	// os.Geteuid() should be sufficient in detecting if the user running it has root permission
-	// SUDO_USER is not reliable as attacker could potentially set the environmental variable
-	isRoot := os.Geteuid()
-	return isRoot == 0
 }

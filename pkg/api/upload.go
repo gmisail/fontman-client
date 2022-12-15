@@ -8,6 +8,7 @@ import (
 	"net/url"
 )
 
+// UploadRegistryFile uploads a registry file to the remote registry.
 func UploadRegistryFile(file model.RegistryFile, baseUrl string) error {
 	contents, err := json.Marshal(file)
 
