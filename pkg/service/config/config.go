@@ -1,8 +1,6 @@
 package config
 
 import (
-	"errors"
-	"fmt"
 	"fontman/client/pkg/model"
 	"os"
 	"path/filepath"
@@ -10,45 +8,8 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
-// Create .config/fontman and return it; if it already exists, return it.
-func CreateConfigDirectory() (string, error) {
-	// home folder should _really_ exist
-	configPath, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
-	}
-
-	// we concatenate .config instead of using OS-agnostic UserConfigDir because OSX doesn't allow
-	// creating a file of perm 755 in ~/Library/Application Support anymore.
-	configPath = filepath.Join(configPath, ".config")
-	// check if .config exists
-	if _, err := os.Stat(configPath); errors.Is(err, os.ErrNotExist) {
-		err := os.Mkdir(configPath, 0755)
-		if err != nil {
-			return "", err
-		}
-	} else if err != nil {
-		// if stat failed not because folder doesn't exist
-		return "", err
-	}
-
-	configPath = filepath.Join(configPath, "fontman")
-	if _, err := os.Stat(configPath); errors.Is(err, os.ErrNotExist) {
-		fmt.Println("fontman config folder doesn't exist; creating...")
-		err := os.Mkdir(configPath, 0755)
-		if err != nil {
-			return "", err
-		}
-		return configPath, nil
-	} else if err != nil {
-		// if stat failed and it's not because folder doesn't exist
-		return "", err
-	} else {
-		// if fontman folder already exists
-		return configPath, nil
-	}
-}
-
+// Read will attempt to read the user's configuration
+// file (`~/.config/fontman/config.yml`), if it exists.
 func Read() (model.ConfigFile, error) {
 	// ReadConfig assumes that the config file already exists.
 	configFile := model.ConfigFile{}
@@ -74,7 +35,8 @@ func Read() (model.ConfigFile, error) {
 	}
 }
 
-// GenerateConfig only initializes one of the two InstallPath fields
+// GenerateConfig will generate a configuration file with
+// sane defaults (only initializes one of the two InstallPath fields).
 func Generate(isGlobal bool, update bool) error {
 	configDir, err := GetFontFolder(isGlobal)
 	// if no valid folder found, return err

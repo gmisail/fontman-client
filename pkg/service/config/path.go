@@ -2,11 +2,53 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 )
 
-// first time setup function. generates fontman config file if it doesn't exist.
+// CreateConfigDirectory creates a configuration directory,
+// if it does not exist.
+func CreateConfigDirectory() (string, error) {
+	// home folder should _really_ exist
+	configPath, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	// we concatenate .config instead of using OS-agnostic UserConfigDir because OSX doesn't allow
+	// creating a file of perm 755 in ~/Library/Application Support anymore.
+	configPath = filepath.Join(configPath, ".config")
+	// check if .config exists
+	if _, err := os.Stat(configPath); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(configPath, 0755)
+		if err != nil {
+			return "", err
+		}
+	} else if err != nil {
+		// if stat failed not because folder doesn't exist
+		return "", err
+	}
+
+	configPath = filepath.Join(configPath, "fontman")
+	if _, err := os.Stat(configPath); errors.Is(err, os.ErrNotExist) {
+		fmt.Println("fontman config folder doesn't exist; creating...")
+		err := os.Mkdir(configPath, 0755)
+		if err != nil {
+			return "", err
+		}
+		return configPath, nil
+	} else if err != nil {
+		// if stat failed and it's not because folder doesn't exist
+		return "", err
+	} else {
+		// if fontman folder already exists
+		return configPath, nil
+	}
+}
+
+// SetupFolders will setup the necessary files & folders for the program
+// to operate. Creates a configuration file if one does not exist.
 func SetupFolders(isGlobal bool) error {
 	configPathDir, err := CreateConfigDirectory()
 	if err != nil {
@@ -27,6 +69,7 @@ func SetupFolders(isGlobal bool) error {
 	return nil
 }
 
+// GetFontFolder gets the font directory for the current system.
 func GetFontFolder(isGlobal bool) (string, error) {
 	if !isGlobal {
 		homePath, _ := os.UserHomeDir()
