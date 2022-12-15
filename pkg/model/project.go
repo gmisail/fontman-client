@@ -15,6 +15,7 @@ type ProjectFile struct {
 	Fonts []ProjectFont `yaml:"fonts"`
 }
 
+// ReadProjectFile reads & parses the project file located at `path`.
 func ReadProjectFile(path string) (*ProjectFile, error) {
 	contents, fileErr := os.ReadFile(path)
 

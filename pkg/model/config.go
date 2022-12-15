@@ -12,6 +12,8 @@ type ConfigFile struct {
 	RegistryAddress   string `yaml:"registry"`
 }
 
+// ReadConfigFile reads & parses a configuration file located
+// at `path`.
 func ReadConfigFile(path string) (*ConfigFile, error) {
 	contents, fileErr := os.ReadFile(path)
 

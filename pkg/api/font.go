@@ -8,7 +8,7 @@ import (
 	"net/url"
 )
 
-// GetFontDetails: return details for a font with ID
+// GetFontDetails returns details for a font with ID.
 func GetFontDetails(id string, baseUrl string) (*model.RemoteFontFamily, error) {
 	// build the URL, make sure all components are properly escaped
 	registryUrl, err := url.Parse(baseUrl)
@@ -45,6 +45,7 @@ func GetFontDetails(id string, baseUrl string) (*model.RemoteFontFamily, error) 
 	return &font, nil
 }
 
+// GetFontOptions will get possible font matches based on its name.
 func GetFontOptions(name string, baseUrl string) ([]model.RemoteFontFamily, error) {
 	// build the URL, make sure all components are properly escaped
 	registryUrl, err := url.Parse(baseUrl)
