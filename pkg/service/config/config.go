@@ -1,9 +1,10 @@
 package config
 
 import (
-	"fontman/client/pkg/model"
 	"os"
 	"path/filepath"
+
+	"github.com/gmisail/fontman-client/pkg/model"
 
 	"github.com/goccy/go-yaml"
 )

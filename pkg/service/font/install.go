@@ -2,13 +2,14 @@ package font
 
 import (
 	"fmt"
-	"fontman/client/pkg/api"
-	"fontman/client/pkg/errors"
-	"fontman/client/pkg/service/config"
-	"fontman/client/pkg/service/fontconfig"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/gmisail/fontman-client/pkg/api"
+	"github.com/gmisail/fontman-client/pkg/errors"
+	"github.com/gmisail/fontman-client/pkg/service/config"
+	"github.com/gmisail/fontman-client/pkg/service/fontconfig"
 )
 
 func validateFormat(file string) bool {

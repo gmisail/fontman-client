@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"fontman/client/pkg/errors"
+	"github.com/gmisail/fontman-client/pkg/errors"
 
 	"github.com/goccy/go-yaml"
 )

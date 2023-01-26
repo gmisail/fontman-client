@@ -1,8 +1,9 @@
 package main
 
 import (
-	"fontman/client/cmd/fontman/commands"
 	"os"
+
+	"github.com/gmisail/fontman-client/cmd/fontman/commands"
 
 	"github.com/urfave/cli/v2"
 )

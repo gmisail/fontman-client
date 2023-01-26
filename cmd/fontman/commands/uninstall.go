@@ -2,7 +2,8 @@ package commands
 
 import (
 	"fmt"
-	"fontman/client/pkg/service/config"
+
+	"github.com/gmisail/fontman-client/pkg/service/config"
 
 	"github.com/urfave/cli/v2"
 )

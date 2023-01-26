@@ -1,9 +1,10 @@
 package tests
 
 import (
-	"fontman/client/pkg/service/fontconfig"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/gmisail/fontman-client/pkg/service/fontconfig"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSectionParse(t *testing.T) {

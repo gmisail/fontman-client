@@ -2,10 +2,11 @@ package api
 
 import (
 	"encoding/json"
-	"fontman/client/pkg/model"
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/gmisail/fontman-client/pkg/model"
 )
 
 // GetFontDetails returns details for a font with ID.

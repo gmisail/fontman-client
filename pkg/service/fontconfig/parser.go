@@ -1,9 +1,10 @@
 package fontconfig
 
 import (
-	"fontman/client/pkg/model"
 	"path/filepath"
 	"strings"
+
+	"github.com/gmisail/fontman-client/pkg/model"
 )
 
 /*

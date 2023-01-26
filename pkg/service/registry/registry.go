@@ -1,8 +1,8 @@
 package registry
 
 import (
-	"fontman/client/pkg/api"
-	"fontman/client/pkg/model"
+	"github.com/gmisail/fontman-client/pkg/api"
+	"github.com/gmisail/fontman-client/pkg/model"
 )
 
 func UploadRegistryFile(file model.RegistryFile, baseUrl string) error {

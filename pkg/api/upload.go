@@ -3,9 +3,10 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fontman/client/pkg/model"
 	"net/http"
 	"net/url"
+
+	"github.com/gmisail/fontman-client/pkg/model"
 )
 
 // UploadRegistryFile uploads a registry file to the remote registry.

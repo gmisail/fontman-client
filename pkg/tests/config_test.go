@@ -1,9 +1,10 @@
 package tests
 
 import (
-	"fontman/client/pkg/model"
-	"fontman/client/pkg/service/config"
 	"testing"
+
+	"github.com/gmisail/fontman-client/pkg/model"
+	"github.com/gmisail/fontman-client/pkg/service/config"
 )
 
 func TestProjectFile(t *testing.T) {

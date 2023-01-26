@@ -3,15 +3,17 @@ package commands
 import (
 	"errors"
 	"fmt"
-	"fontman/client/pkg/service/config"
-	"fontman/client/pkg/service/font"
-	"fontman/client/pkg/util"
 	"strings"
 
-	"fontman/client/pkg/api"
-	fontmanErr "fontman/client/pkg/errors"
-	"fontman/client/pkg/model"
+	"github.com/gmisail/fontman-client/pkg/service/config"
+	"github.com/gmisail/fontman-client/pkg/service/font"
+	"github.com/gmisail/fontman-client/pkg/util"
+
 	"path/filepath"
+
+	"github.com/gmisail/fontman-client/pkg/api"
+	fontmanErr "github.com/gmisail/fontman-client/pkg/errors"
+	"github.com/gmisail/fontman-client/pkg/model"
 
 	"github.com/urfave/cli/v2"
 )
