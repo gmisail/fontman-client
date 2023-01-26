@@ -21,6 +21,7 @@ type RegistryStyle struct {
 	Url   string `yaml:"url"`
 }
 
+// ReadRegistryFile reads & parses the registry file located at `path`.
 func ReadRegistryFile(path string) (*RegistryFile, error) {
 	contents, fileErr := os.ReadFile(path)
 

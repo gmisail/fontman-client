@@ -7,9 +7,9 @@ import (
 )
 
 func TestProjectFile(t *testing.T) {
-	projectFile, _ := model.ReadProjectFile("../config/testdata/valid_fontman.yml")
+	projectFile, projectErr := model.ReadProjectFile("../config/testdata/valid_fontman.yml")
 
-	if projectFile == nil {
+	if projectErr != nil {
 		t.Error("Failed to load / parse project file.")
 	}
 
@@ -31,8 +31,9 @@ func TestInvalidProjectFile(t *testing.T) {
 }
 
 func TestConfigFile(t *testing.T) {
-	configFile, _ := model.ReadConfigFile("../config/testdata/valid_config.yml")
-	if configFile == nil {
+	configFile, err := model.ReadConfigFile("../config/testdata/valid_config.yml")
+
+	if err != nil {
 		t.Error("Failed to load / parse config file.")
 	}
 
@@ -54,7 +55,7 @@ func TestInvalidConfigFile(t *testing.T) {
 }
 
 func TestCreateConfigPath(t *testing.T) {
-	configPath, err := config.CreatePath()
+	configPath, err := config.CreateConfigDirectory()
 	t.Log("configPath is ", configPath)
 	if err != nil {
 		t.Error("Couldn't create fontman config folder: ", err)
@@ -90,7 +91,6 @@ func TestUpdateLocalConfig(t *testing.T) {
 }
 
 func TestReadConfig(t *testing.T) {
-	configFile := model.ConfigFile{}
 	configFile, err := config.Read()
 	t.Log("Local install path is ", configFile.LocalInstallPath)
 	t.Log("Global install path is ", configFile.GlobalInstallPath)

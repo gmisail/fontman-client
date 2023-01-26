@@ -3,8 +3,8 @@ package commands
 import (
 	"fmt"
 	"fontman/client/pkg/model"
+	"fontman/client/pkg/service/config"
 	"fontman/client/pkg/service/registry"
-	"fontman/client/pkg/util"
 
 	"github.com/urfave/cli/v2"
 )
@@ -12,9 +12,7 @@ import (
 // Called if 'upload' subcommand is invoked.
 func onUpload(c *cli.Context) error {
 	if c.Args().Len() == 0 {
-		cli.ShowCommandHelp(c, "upload")
-
-		return nil
+		return cli.ShowCommandHelp(c, "upload")
 	}
 
 	fileName := c.Args().Get(0)
@@ -24,7 +22,7 @@ func onUpload(c *cli.Context) error {
 		return readErr
 	}
 
-	configFile, configReadErr := util.ReadConfig()
+	configFile, configReadErr := config.Read()
 	if configReadErr != nil {
 		return configReadErr
 	}

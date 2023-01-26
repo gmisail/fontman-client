@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-// DownloadFrom: downloads file from 'url' and saves it as 'dest`
+// DownloadFrom will download the file at URL and save it to `dest`.
 func DownloadFrom(url string, dest string) error {
 	response, resErr := http.Get(url)
 

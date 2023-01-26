@@ -3,9 +3,9 @@ package commands
 import (
 	"errors"
 	"fmt"
-	"fontman/client/pkg/service"
 	"fontman/client/pkg/service/config"
 	"fontman/client/pkg/service/font"
+	"fontman/client/pkg/util"
 	"strings"
 
 	"fontman/client/pkg/api"
@@ -50,16 +50,16 @@ func selectFromList(options []model.RemoteFontFamily) string {
 
 // installRemote: fetches options, shows a selection view, and then installs based on user selection
 func installRemote(fileName string, global bool) error {
-	configFile, err := config.ReadConfig()
+	configFile, err := config.Read()
 
 	if err != nil {
-		err = config.GenerateConfig(global, false)
+		err = config.Generate(global, false)
 		if err != nil {
 			return err
 		}
 
 		// re-read the config to make sure RegistryAddress can be checked
-		configFile, err = config.ReadConfig()
+		configFile, err = config.Read()
 		if err != nil {
 			return err
 		}
@@ -83,11 +83,11 @@ func installRemote(fileName string, global bool) error {
 		id = selectFromList(options)
 
 		if len(id) == 0 {
-			return errors.New(fmt.Sprintf("Invalid option selected."))
+			return errors.New("Invalid option selected.")
 		}
 	} else {
 		// no options, throw error
-		return errors.New(fmt.Sprintf("No font found with name '%s'", fileName))
+		return fmt.Errorf("No font found with name '%s'", fileName)
 	}
 
 	return font.InstallFromRemote(id, configFile.RegistryAddress, global)
@@ -96,7 +96,7 @@ func installRemote(fileName string, global bool) error {
 // Called if 'install' subcommand is invoked.
 func onInstall(c *cli.Context, style string, excludeStyle string, global bool) error {
 	// if global flag is set, but user doesn't have permission
-	if global && !service.CheckRoot() {
+	if global && !util.CheckRoot() {
 		return errors.New("no root permission; run it again with sudo")
 	}
 
